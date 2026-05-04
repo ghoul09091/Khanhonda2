@@ -112,6 +112,7 @@
       <div class="top-nav">
         <h2>Admin Dashboard</h2>
         <div class="action-row">
+          <button class="btn secondary" id="showDashboard">Dashboard</button>
           <button class="btn" id="showBilling">Client RCM & Billing</button>
           <button class="btn secondary" id="showInventory">Inventory</button>
           <button class="btn secondary" id="showNotifications">Notification Center</button>
@@ -174,13 +175,21 @@
 
       <div id="notificationsPage" class="card hidden">
         <h3>Notification Center</h3>
-        <table id="notifyTable"><thead><tr><th>Type</th><th>Date/Time</th><th>Summary</th><th>Action</th></tr></thead><tbody></tbody></table>
+        <table id="notifyTable"><thead><tr><th>Type</th><th>Date/Time</th><th>Summary</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table>
         <div id="notifyDetail" class="invoice hidden" style="margin-top:14px"></div>
+      </div>
+      <div id="dashboardPage" class="card">
+        <h3>Dashboard Overview</h3>
+        <div class="grid cols-2">
+          <div class="pill" id="totalServicesCard">Total Services: 0</div>
+          <div class="pill" id="totalIncomeCard">Total Income: PKR 0</div>
+          <div class="pill" id="totalItemsUsedCard">Total Items Used: 0</div>
+        </div>
       </div>
 
     </section>
 
-    <footer class="footer-tools">
+    <footer class="footer-tools" id="publicFooterTools">
       <div class="contact-bar">
         <strong>Contact Us (WhatsApp):</strong>
         <a href="https://wa.me/923021046816" style="font-weight:700;margin-left:6px">03021046816</a>
@@ -308,7 +317,7 @@ function persistExtra(){
   localStorage.setItem('kh_notifications', JSON.stringify(storage.notifications));
 }
 function addNotification(type, payload){
-  storage.notifications.unshift({id:Date.now().toString(), type, time:now(), payload});
+  storage.notifications.unshift({id:Date.now().toString(), type, time:now(), payload, read:false});
   persistExtra();
 }
 
@@ -321,7 +330,7 @@ async function saveInventoryItem(item){
 el('openAdminBtn').onclick=async ()=>{
   const pass = await askPassword();
   if(pass===null) return;
-  if(pass===ADMIN_PASSWORD){await loadData();el('publicSection').classList.add('hidden');el('adminPanel').classList.remove('hidden');el('heroHookLine').classList.add('hidden');el('openAdminBtn').classList.add('hidden');el('publicHomeBtn').classList.remove('hidden');document.querySelector('.hero').classList.add('compact');window.scrollTo({top:0,behavior:'smooth'});renderNotifications();} else alert('Wrong password');
+  if(pass===ADMIN_PASSWORD){await loadData();el('publicSection').classList.add('hidden');el('adminPanel').classList.remove('hidden');el('publicFooterTools').classList.add('hidden');el('heroHookLine').classList.add('hidden');el('openAdminBtn').classList.add('hidden');el('publicHomeBtn').classList.remove('hidden');document.querySelector('.hero').classList.add('compact');window.scrollTo({top:0,behavior:'smooth'});renderNotifications();renderDashboard();} else alert('Wrong password');
 };
 el('publicHomeBtn').onclick=()=>{el('logoutBtn').click(); window.scrollTo({top:0,behavior:'smooth'});};
 el('showServicesBtn').onclick=()=>{
@@ -356,10 +365,11 @@ el('savePublicFeedbackBtn').onclick=()=>{
   addNotification('feedback', feedback);
   alert('Feedback submitted.');
 };
-el('logoutBtn').onclick=()=>{el('adminPanel').classList.add('hidden');el('publicSection').classList.remove('hidden');el('heroHookLine').classList.remove('hidden');el('openAdminBtn').classList.remove('hidden');el('publicHomeBtn').classList.add('hidden');document.querySelector('.hero').classList.remove('compact');};
-el('showInventory').onclick=()=>{el('inventoryPage').classList.remove('hidden');el('billingPage').classList.add('hidden');el('notificationsPage').classList.add('hidden');renderInventory();};
-el('showBilling').onclick=()=>{el('billingPage').classList.remove('hidden');el('inventoryPage').classList.add('hidden');el('notificationsPage').classList.add('hidden');};
-el('showNotifications').onclick=()=>{el('notificationsPage').classList.remove('hidden');el('billingPage').classList.add('hidden');el('inventoryPage').classList.add('hidden');renderNotifications();};
+el('logoutBtn').onclick=()=>{el('adminPanel').classList.add('hidden');el('publicSection').classList.remove('hidden');el('publicFooterTools').classList.remove('hidden');el('heroHookLine').classList.remove('hidden');el('openAdminBtn').classList.remove('hidden');el('publicHomeBtn').classList.add('hidden');document.querySelector('.hero').classList.remove('compact');};
+el('showInventory').onclick=()=>{el('inventoryPage').classList.remove('hidden');el('billingPage').classList.add('hidden');el('notificationsPage').classList.add('hidden');el('dashboardPage').classList.add('hidden');renderInventory();};
+el('showBilling').onclick=()=>{el('billingPage').classList.remove('hidden');el('inventoryPage').classList.add('hidden');el('notificationsPage').classList.add('hidden');el('dashboardPage').classList.add('hidden');};
+el('showNotifications').onclick=()=>{el('notificationsPage').classList.remove('hidden');el('billingPage').classList.add('hidden');el('inventoryPage').classList.add('hidden');el('dashboardPage').classList.add('hidden');renderNotifications();};
+el('showDashboard').onclick=()=>{el('dashboardPage').classList.remove('hidden');el('billingPage').classList.add('hidden');el('inventoryPage').classList.add('hidden');el('notificationsPage').classList.add('hidden');renderDashboard();};
 el('editClientBtn').onclick=()=>{
   ['clientPhone','clientName','clientBike','clientAddress'].forEach(id=>el(id).disabled=false);
   el('editClientBtn').textContent='Editing...';
@@ -406,7 +416,7 @@ el('searchBtn').onclick=()=>{
   if(!phone) return alert('Enter phone or bill number.');
   if(phone.length!==11) return alert('Phone number must be exactly 11 digits.');
   const client=storage.clients[phone];
-  el('currentBillTable').querySelector('tbody').innerHTML=''; addRow(); el('billingWrap').classList.remove('hidden');
+  el('currentBillTable').querySelector('tbody').innerHTML=''; addRow(); addRow(); addRow(); el('billingWrap').classList.remove('hidden');
   if(client){
     el('clientFormWrap').classList.remove('hidden'); el('clientHistoryWrap').classList.remove('hidden');
     el('clientPhone').value=phone; el('clientName').value=client.name; el('clientBike').value=client.bike; el('clientAddress').value=client.address;
@@ -459,10 +469,25 @@ function renderNotifications(){
   storage.notifications.forEach((n,idx)=>{
     const tr=document.createElement('tr');
     const summary=n.type==='appointment' ? `${n.payload.name} (${n.payload.phone})` : n.payload.text.slice(0,50);
-    tr.innerHTML=`<td>${n.type}</td><td>${n.time}</td><td>${summary}</td><td><button class="btn secondary" data-i="${idx}">Full View Details</button></td>`;
-    tr.querySelector('button').onclick=()=>openNotification(idx);
+    tr.innerHTML=`<td>${n.type}</td><td>${n.time}</td><td>${summary}</td><td>${n.read?'Read':'Unread'}</td><td><button class="btn secondary" data-i="${idx}">Full View Details</button> <button class="btn" data-r="${idx}">${n.read?'Mark as Unread':'Mark as Read'}</button></td>`;
+    tr.querySelector('[data-i]').onclick=()=>openNotification(idx);
+    tr.querySelector('[data-r]').onclick=()=>toggleRead(idx);
     body.appendChild(tr);
   });
+}
+function toggleRead(idx){
+  if(!storage.notifications[idx]) return;
+  storage.notifications[idx].read = !storage.notifications[idx].read;
+  persistExtra();
+  renderNotifications();
+}
+function renderDashboard(){
+  const totalServices=storage.invoices.reduce((s,inv)=>s+inv.items.length,0);
+  const totalIncome=storage.invoices.reduce((s,inv)=>s+Number(inv.total||0),0);
+  const totalItemsUsed=storage.invoices.reduce((s,inv)=>s+inv.items.reduce((a,i)=>a+Number(i.qty||0),0),0);
+  el('totalServicesCard').innerText=`Total Services: ${totalServices}`;
+  el('totalIncomeCard').innerText=`Total Income: PKR ${totalIncome}`;
+  el('totalItemsUsedCard').innerText=`Total Items Used: ${totalItemsUsed}`;
 }
 function openNotification(idx){
   const n=storage.notifications[idx]; if(!n) return;
