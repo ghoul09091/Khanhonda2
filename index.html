@@ -128,6 +128,10 @@
             <input id="searchPhone" maxlength="11" inputmode="numeric" placeholder="e.g. 03001234567" />
           </div>
           <div>
+            <label>Search by Client Name</label>
+            <input id="searchName" placeholder="e.g. Ali Khan" />
+          </div>
+          <div>
             <label>Search by Bill Number (6 digit)</label>
             <input id="searchBill" maxlength="6" inputmode="numeric" placeholder="e.g. 104522" />
           </div>
@@ -185,6 +189,13 @@
           <div class="pill" id="totalIncomeCard">Total Income: PKR 0</div>
           <div class="pill" id="totalItemsUsedCard">Total Items Used: 0</div>
         </div>
+        <div class="action-row">
+          <button class="btn secondary" id="filterAllBtn">All History</button>
+          <button class="btn secondary" id="filterTodayBtn">Today</button>
+          <input type="date" id="dashboardDateFilter" />
+          <button class="btn" id="filterDateBtn">Filter by Date</button>
+        </div>
+        <table id="dashboardHistoryTable"><thead><tr><th>Date/Time</th><th>Name</th><th>Bill Amount</th><th>Services Done</th></tr></thead><tbody></tbody></table>
       </div>
 
     </section>
@@ -283,13 +294,13 @@ el('searchBill').addEventListener('input',()=>{
 });
 
 async function loadData(){
+  storage.appointments = JSON.parse(localStorage.getItem('kh_appointments') || '[]');
+  storage.feedback = JSON.parse(localStorage.getItem('kh_feedback') || '[]');
+  storage.notifications = JSON.parse(localStorage.getItem('kh_notifications') || '[]');
   if(!firebaseReady){
     storage.clients = JSON.parse(localStorage.getItem('kh_clients') || '{}');
     storage.invoices = JSON.parse(localStorage.getItem('kh_invoices') || '[]');
     storage.inventory = JSON.parse(localStorage.getItem('kh_inventory') || '[]');
-    storage.appointments = JSON.parse(localStorage.getItem('kh_appointments') || '[]');
-    storage.feedback = JSON.parse(localStorage.getItem('kh_feedback') || '[]');
-    storage.notifications = JSON.parse(localStorage.getItem('kh_notifications') || '[]');
     return;
   }
   const clientsSnap = await getDocs(collection(db, 'clients'));
@@ -330,7 +341,7 @@ async function saveInventoryItem(item){
 el('openAdminBtn').onclick=async ()=>{
   const pass = await askPassword();
   if(pass===null) return;
-  if(pass===ADMIN_PASSWORD){await loadData();el('publicSection').classList.add('hidden');el('adminPanel').classList.remove('hidden');el('publicFooterTools').classList.add('hidden');el('heroHookLine').classList.add('hidden');el('openAdminBtn').classList.add('hidden');el('publicHomeBtn').classList.remove('hidden');document.querySelector('.hero').classList.add('compact');window.scrollTo({top:0,behavior:'smooth'});renderNotifications();renderDashboard();} else alert('Wrong password');
+  if(pass===ADMIN_PASSWORD){await loadData();el('publicSection').classList.add('hidden');el('adminPanel').classList.remove('hidden');el('publicFooterTools').classList.add('hidden');document.querySelector('.hero').classList.add('hidden');window.scrollTo({top:0,behavior:'smooth'});renderNotifications();renderDashboard();} else alert('Wrong password');
 };
 el('publicHomeBtn').onclick=()=>{el('logoutBtn').click(); window.scrollTo({top:0,behavior:'smooth'});};
 el('showServicesBtn').onclick=()=>{
@@ -365,11 +376,14 @@ el('savePublicFeedbackBtn').onclick=()=>{
   addNotification('feedback', feedback);
   alert('Feedback submitted.');
 };
-el('logoutBtn').onclick=()=>{el('adminPanel').classList.add('hidden');el('publicSection').classList.remove('hidden');el('publicFooterTools').classList.remove('hidden');el('heroHookLine').classList.remove('hidden');el('openAdminBtn').classList.remove('hidden');el('publicHomeBtn').classList.add('hidden');document.querySelector('.hero').classList.remove('compact');};
+el('logoutBtn').onclick=()=>{el('adminPanel').classList.add('hidden');el('publicSection').classList.remove('hidden');el('publicFooterTools').classList.remove('hidden');document.querySelector('.hero').classList.remove('hidden');};
 el('showInventory').onclick=()=>{el('inventoryPage').classList.remove('hidden');el('billingPage').classList.add('hidden');el('notificationsPage').classList.add('hidden');el('dashboardPage').classList.add('hidden');renderInventory();};
 el('showBilling').onclick=()=>{el('billingPage').classList.remove('hidden');el('inventoryPage').classList.add('hidden');el('notificationsPage').classList.add('hidden');el('dashboardPage').classList.add('hidden');};
 el('showNotifications').onclick=()=>{el('notificationsPage').classList.remove('hidden');el('billingPage').classList.add('hidden');el('inventoryPage').classList.add('hidden');el('dashboardPage').classList.add('hidden');renderNotifications();};
 el('showDashboard').onclick=()=>{el('dashboardPage').classList.remove('hidden');el('billingPage').classList.add('hidden');el('inventoryPage').classList.add('hidden');el('notificationsPage').classList.add('hidden');renderDashboard();};
+el('filterAllBtn').onclick=()=>renderDashboardTable('all');
+el('filterTodayBtn').onclick=()=>renderDashboardTable('today');
+el('filterDateBtn').onclick=()=>renderDashboardTable('date');
 el('editClientBtn').onclick=()=>{
   ['clientPhone','clientName','clientBike','clientAddress'].forEach(id=>el(id).disabled=false);
   el('editClientBtn').textContent='Editing...';
@@ -407,26 +421,32 @@ function renderHistory(phone){
 }
 
 el('searchBtn').onclick=()=>{
-  const phone=el('searchPhone').value.trim(), bill=el('searchBill').value.trim();
+  const phone=el('searchPhone').value.trim(), bill=el('searchBill').value.trim(), name=el('searchName').value.trim().toLowerCase();
   el('invoicePreview').classList.add('hidden');
   if(bill){
     const inv=storage.invoices.find(x=>x.billNo===bill); if(!inv) return alert('Bill not found');
     showInvoice(inv); return;
   }
-  if(!phone) return alert('Enter phone or bill number.');
-  if(phone.length!==11) return alert('Phone number must be exactly 11 digits.');
-  const client=storage.clients[phone];
+  if(!phone && !name) return alert('Enter phone, name or bill number.');
+  let selectedPhone=phone;
+  if(!selectedPhone && name){
+    const match=Object.entries(storage.clients).find(([p,c])=>(c.name||'').toLowerCase().includes(name));
+    if(match) selectedPhone=match[0];
+  }
+  if(!selectedPhone) return alert('Enter phone, name or bill number.');
+  if(selectedPhone.length!==11) return alert('Phone number must be exactly 11 digits.');
+  const client=storage.clients[selectedPhone];
   el('currentBillTable').querySelector('tbody').innerHTML=''; addRow(); addRow(); addRow(); el('billingWrap').classList.remove('hidden');
   if(client){
     el('clientFormWrap').classList.remove('hidden'); el('clientHistoryWrap').classList.remove('hidden');
-    el('clientPhone').value=phone; el('clientName').value=client.name; el('clientBike').value=client.bike; el('clientAddress').value=client.address;
+    el('clientPhone').value=selectedPhone; el('clientName').value=client.name; el('clientBike').value=client.bike; el('clientAddress').value=client.address;
     ['clientPhone','clientName','clientBike','clientAddress'].forEach(id=>el(id).disabled=true);
     el('editClientBtn').textContent='Edit';
-    renderHistory(phone);
+    renderHistory(selectedPhone);
   } else {
     el('clientHistoryWrap').classList.add('hidden');
     askClientType().then(option=>{
-      if(option==='new'){el('clientFormWrap').classList.remove('hidden');el('clientPhone').value=phone;el('clientName').value='';el('clientBike').value='';el('clientAddress').value='';['clientPhone','clientName','clientBike','clientAddress'].forEach(id=>el(id).disabled=false);el('editClientBtn').textContent='Editing...';}
+      if(option==='new'){el('clientFormWrap').classList.remove('hidden');el('clientPhone').value=selectedPhone;el('clientName').value='';el('clientBike').value='';el('clientAddress').value='';['clientPhone','clientName','clientBike','clientAddress'].forEach(id=>el(id).disabled=false);el('editClientBtn').textContent='Editing...';}
       else {el('clientFormWrap').classList.add('hidden');}
     });
   }
@@ -488,6 +508,25 @@ function renderDashboard(){
   el('totalServicesCard').innerText=`Total Services: ${totalServices}`;
   el('totalIncomeCard').innerText=`Total Income: PKR ${totalIncome}`;
   el('totalItemsUsedCard').innerText=`Total Items Used: ${totalItemsUsed}`;
+  renderDashboardTable('all');
+}
+function renderDashboardTable(mode){
+  const body=el('dashboardHistoryTable').querySelector('tbody');
+  body.innerHTML='';
+  const todayStr = new Date().toDateString();
+  const dateFilter = el('dashboardDateFilter').value;
+  storage.invoices
+    .filter(inv=>{
+      if(mode==='today') return new Date(inv.time).toDateString()===todayStr;
+      if(mode==='date' && dateFilter) return new Date(inv.time).toISOString().slice(0,10)===dateFilter;
+      return true;
+    })
+    .forEach(inv=>{
+      const services=inv.items.map(i=>`${i.service} (x${i.qty})`).join(', ');
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${inv.time}</td><td>${inv.name||'Walk-in'}</td><td>${inv.total}</td><td>${services}</td>`;
+      body.appendChild(tr);
+    });
 }
 function openNotification(idx){
   const n=storage.notifications[idx]; if(!n) return;
