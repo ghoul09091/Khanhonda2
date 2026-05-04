@@ -28,7 +28,9 @@
     .invoice{border:2px dashed #b6bfd3;padding:14px;border-radius:10px;background:#fff}
     .muted{color:var(--muted)}
     .public-nav{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
-    .contact-bar{margin-top:14px;background:#ffffff1c;border:1px solid #ffffff42;padding:12px;border-radius:10px}
+    .footer-tools{margin:26px 0 10px}
+    .footer-tools .card{padding:14px}
+    .contact-bar{background:#fff;border:1px solid #d9deea;padding:12px;border-radius:10px}
     .checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin-top:8px}
     .checks label{display:flex;gap:8px;align-items:center;font-weight:500;margin:0}
     .checks input{width:auto}
@@ -50,11 +52,8 @@
     <div class="container">
       <h1>Khan Honda Service Center</h1>
       <p>Complete Bike Care Under One Roof From routine maintenance to major repairs — we keep your ride performing at its best.</p>
-      <button class="btn secondary" id="openAdminBtn">Admin Login</button><p style="margin-top:10px">Where Every Service Builds Trust..</p>
-      <div class="contact-bar">
-        <strong>Contact Us (WhatsApp):</strong>
-        <a href="https://wa.me/923021046816" style="color:#fff;font-weight:700;margin-left:6px">03021046816</a>
-      </div>
+      <button class="btn secondary" id="openAdminBtn">Admin Login</button>
+      <p id="heroHookLine" style="margin-top:10px">Where Every Service Builds Trust..</p>
     </div>
   </section>
 
@@ -113,6 +112,7 @@
         <div class="action-row">
           <button class="btn" id="showBilling">Client RCM & Billing</button>
           <button class="btn secondary" id="showInventory">Inventory</button>
+          <button class="btn secondary" id="showNotifications">Notification Center</button>
           <button class="btn" id="logoutBtn">Logout</button>
         </div>
       </div>
@@ -170,7 +170,31 @@
         <div class="action-row"><button class="btn" id="addInvBtn">Add / Update Item</button></div>
         <table id="invTable"><thead><tr><th>SKU</th><th>Name</th><th>Qty</th><th>Unit Price</th><th>Stock Value</th></tr></thead><tbody></tbody></table>
       </div>
+
+      <div id="notificationsPage" class="card hidden">
+        <h3>Notification Center</h3>
+        <table id="notifyTable"><thead><tr><th>Type</th><th>Date/Time</th><th>Summary</th><th>Action</th></tr></thead><tbody></tbody></table>
+        <div id="notifyDetail" class="invoice hidden" style="margin-top:14px"></div>
+      </div>
+
+      <div class="footer-tools">
+        <div class="card">
+          <h4>Admin Utilities</h4>
+          <p><strong>WhatsApp Contact:</strong> <a href="https://wa.me/923021046816">03021046816</a></p>
+          <label>Leave Feedback (Admin Only)</label>
+          <textarea id="adminFeedbackText" rows="3" placeholder="Write feedback..."></textarea>
+          <div class="action-row"><button class="btn" id="saveFeedbackBtn">Submit Feedback</button></div>
+        </div>
+      </div>
+
     </section>
+
+    <footer class="footer-tools">
+      <div class="contact-bar">
+        <strong>Contact Us (WhatsApp):</strong>
+        <a href="https://wa.me/923021046816" style="font-weight:700;margin-left:6px">03021046816</a>
+      </div>
+    </footer>
   </main>
 
 <div id="modalRoot" class="hidden"></div>
@@ -198,7 +222,7 @@ if (firebaseConfig.apiKey !== 'YOUR_API_KEY') {
   firebaseReady = true;
 }
 
-const storage = { clients: {}, invoices: [], inventory: [] };
+const storage = { clients: {}, invoices: [], inventory: [], appointments: [], feedback: [], notifications: [] };
 const el=id=>document.getElementById(id);
 
 function showModal({title, subtitle='', bodyHTML='', actions=[]}){
@@ -258,6 +282,9 @@ async function loadData(){
     storage.clients = JSON.parse(localStorage.getItem('kh_clients') || '{}');
     storage.invoices = JSON.parse(localStorage.getItem('kh_invoices') || '[]');
     storage.inventory = JSON.parse(localStorage.getItem('kh_inventory') || '[]');
+    storage.appointments = JSON.parse(localStorage.getItem('kh_appointments') || '[]');
+    storage.feedback = JSON.parse(localStorage.getItem('kh_feedback') || '[]');
+    storage.notifications = JSON.parse(localStorage.getItem('kh_notifications') || '[]');
     return;
   }
   const clientsSnap = await getDocs(collection(db, 'clients'));
@@ -279,6 +306,16 @@ async function saveInvoice(inv){
   storage.invoices.push(inv);
   localStorage.setItem('kh_invoices', JSON.stringify(storage.invoices));
 }
+function persistExtra(){
+  localStorage.setItem('kh_appointments', JSON.stringify(storage.appointments));
+  localStorage.setItem('kh_feedback', JSON.stringify(storage.feedback));
+  localStorage.setItem('kh_notifications', JSON.stringify(storage.notifications));
+}
+function addNotification(type, payload){
+  storage.notifications.unshift({id:Date.now().toString(), type, time:now(), payload});
+  persistExtra();
+}
+
 async function saveInventoryItem(item){
   if(firebaseReady) return setDoc(doc(db,'inventory',item.sku), item);
   const ex=storage.inventory.find(i=>i.sku===item.sku); if(ex){Object.assign(ex,item);} else storage.inventory.push(item);
@@ -288,7 +325,7 @@ async function saveInventoryItem(item){
 el('openAdminBtn').onclick=async ()=>{
   const pass = await askPassword();
   if(pass===null) return;
-  if(pass===ADMIN_PASSWORD){await loadData();el('publicSection').classList.add('hidden');el('adminPanel').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});} else alert('Wrong password');
+  if(pass===ADMIN_PASSWORD){await loadData();el('publicSection').classList.add('hidden');el('adminPanel').classList.remove('hidden');el('heroHookLine').classList.add('hidden');window.scrollTo({top:0,behavior:'smooth'});renderNotifications();} else alert('Wrong password');
 };
 el('showServicesBtn').onclick=()=>{
   el('servicesPage').classList.remove('hidden');
@@ -304,22 +341,40 @@ el('submitAppointmentBtn').onclick=()=>{
   const services=[...document.querySelectorAll('.apptServiceOpt:checked')].map(x=>x.value);
   el('apptPhone').value = phone.replace(/\D/g,'').slice(0,11);
   if(!name || !phone || !bikeType || !services.length || !date || !time) return alert('Please fill all required fields.');
+  const appointment={name,phone,bikeType,services,date,time,notes:el('apptNotes').value.trim(),createdAt:now()};
+  storage.appointments.push(appointment);
+  persistExtra();
+  addNotification('appointment', appointment);
   alert(`Appointment request submitted for ${name} on ${date} at ${time}.\nServices: ${services.join(', ')}`);
   ['apptName','apptPhone','apptBikeType','apptDate','apptTime','apptNotes'].forEach(id=>el(id).value='');
   document.querySelectorAll('.apptServiceOpt').forEach(x=>x.checked=false);
 };
-el('logoutBtn').onclick=()=>{el('adminPanel').classList.add('hidden');el('publicSection').classList.remove('hidden');};
-el('showBilling').onclick=()=>{el('billingPage').classList.remove('hidden');el('inventoryPage').classList.add('hidden');};
-el('showInventory').onclick=()=>{el('inventoryPage').classList.remove('hidden');el('billingPage').classList.add('hidden');renderInventory();};
+el('saveFeedbackBtn').onclick=()=>{
+  const text=el('adminFeedbackText').value.trim();
+  if(!text) return alert('Please write feedback first.');
+  const feedback={text, createdAt:now()};
+  storage.feedback.push(feedback);
+  el('adminFeedbackText').value='';
+  persistExtra();
+  addNotification('feedback', feedback);
+  alert('Feedback submitted.');
+};
+el('logoutBtn').onclick=()=>{el('adminPanel').classList.add('hidden');el('publicSection').classList.remove('hidden');el('heroHookLine').classList.remove('hidden');};
+el('showInventory').onclick=()=>{el('inventoryPage').classList.remove('hidden');el('billingPage').classList.add('hidden');el('notificationsPage').classList.add('hidden');renderInventory();};
+el('showBilling').onclick=()=>{el('billingPage').classList.remove('hidden');el('inventoryPage').classList.add('hidden');el('notificationsPage').classList.add('hidden');};
+el('showNotifications').onclick=()=>{el('notificationsPage').classList.remove('hidden');el('billingPage').classList.add('hidden');el('inventoryPage').classList.add('hidden');renderNotifications();};
 
 function generateBillNo(){let n; do{ n = Math.floor(100000+Math.random()*900000).toString(); }while(storage.invoices.find(x=>x.billNo===n)); return n;}
 function now(){return new Date().toLocaleString();}
 
 function addRow(service='',qty=1,price=0){
   const tr=document.createElement('tr');
-  tr.innerHTML=`<td><input value="${service}"/></td><td><input type="number" min="1" value="${qty}"/></td><td><input type="number" min="0" value="${price}"/></td><td class="lt">0</td>`;
+  tr.innerHTML=`<td><input value="${service}" placeholder="Service name or SKU"/></td><td><input type="number" min="1" value="${qty}"/></td><td><input type="number" min="0" value="${price===0?'':price}" placeholder="Enter price"/></td><td class="lt">0</td>`;
   el('currentBillTable').querySelector('tbody').appendChild(tr);
-  [...tr.querySelectorAll('input')].forEach(i=>i.oninput=updateTotals);
+  const serviceInput=tr.children[0].querySelector('input');
+  const priceInput=tr.children[2].querySelector('input');
+  serviceInput.onblur=()=>{const sku=serviceInput.value.trim(); const item=storage.inventory.find(i=>i.sku===sku); if(item){serviceInput.value=item.name; priceInput.value=item.price; updateTotals();}};
+  [...tr.querySelectorAll('input')].forEach(i=>{i.onfocus=()=>{if(i.value==='0') i.value='';}; i.oninput=updateTotals;});
   updateTotals();
 }
 function updateTotals(){
@@ -376,13 +431,7 @@ function showInvoice(inv){
 }
 window.downloadInvoice=(billNo)=>{
   const inv=storage.invoices.find(x=>x.billNo===billNo); if(!inv) return;
-  const text=`Invoice #${inv.billNo}
-Time: ${inv.time}
-Client: ${inv.name||'Walk-in'}
-Phone: ${inv.phone||'N/A'}
-Bike: ${inv.bike||'N/A'}
-
-`+
+  const text=`Invoice #${inv.billNo}\nTime: ${inv.time}\nClient: ${inv.name||'Walk-in'}\nPhone: ${inv.phone||'N/A'}\nBike: ${inv.bike||'N/A'}\n\n`+
   inv.items.map(i=>`${i.service} | Qty ${i.qty} | Price ${i.price} | Total ${i.qty*i.price}`).join('\n')+`\n\nGrand Total: ${inv.total}`;
   const blob=new Blob([text],{type:'text/plain'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`invoice-${billNo}.txt`; a.click();
 }
@@ -400,6 +449,30 @@ el('saveInvoiceBtn').onclick=async ()=>{
   storage.invoices.push(inv); await saveInvoice(inv); showInvoice(inv); alert(`Invoice saved. Bill # ${inv.billNo}`);
   if(phone && storage.clients[phone]){ renderHistory(phone); el('clientHistoryWrap').classList.remove('hidden'); }
 };
+
+
+function renderNotifications(){
+  const body=el('notifyTable').querySelector('tbody'); body.innerHTML='';
+  storage.notifications.forEach((n,idx)=>{
+    const tr=document.createElement('tr');
+    const summary=n.type==='appointment' ? `${n.payload.name} (${n.payload.phone})` : n.payload.text.slice(0,50);
+    tr.innerHTML=`<td>${n.type}</td><td>${n.time}</td><td>${summary}</td><td><button class="btn secondary" data-i="${idx}">Full View Details</button></td>`;
+    tr.querySelector('button').onclick=()=>openNotification(idx);
+    body.appendChild(tr);
+  });
+}
+function openNotification(idx){
+  const n=storage.notifications[idx]; if(!n) return;
+  const panel=el('notifyDetail');
+  if(n.type==='appointment'){
+    const existing=storage.clients[n.payload.phone];
+    panel.innerHTML=`<h4>Appointment Request</h4><p><b>Name:</b> ${n.payload.name}</p><p><b>Phone:</b> ${n.payload.phone}</p><p><b>Bike:</b> ${n.payload.bikeType}</p><p><b>Services:</b> ${n.payload.services.join(', ')}</p><p><b>Date/Time:</b> ${n.payload.date} ${n.payload.time}</p><p><b>Notes:</b> ${n.payload.notes||'N/A'}</p><p><b>Client Status:</b> ${existing?'Existing':'New'}</p>${existing?`<button class="btn" id="reviewClientBtn">Review Existing Client</button>`:''}`;
+    if(existing){setTimeout(()=>{el('reviewClientBtn').onclick=()=>{el('showBilling').click();el('searchPhone').value=n.payload.phone;el('searchBtn').click();};},0);}
+  } else {
+    panel.innerHTML=`<h4>Feedback</h4><p>${n.payload.text}</p><p><b>Submitted:</b> ${n.payload.createdAt}</p>`;
+  }
+  panel.classList.remove('hidden');
+}
 
 function renderInventory(){
   const tbody=el('invTable').querySelector('tbody'); tbody.innerHTML='';
