@@ -1,0 +1,207 @@
+ (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
+diff --git a/index.html b/index.html
+index 7bd001065e74f1b282bff2c1cc864b79ea8a35f5..4e45fc8143113048fd9b2e158e107a448fcf9dad 100644
+--- a/index.html
++++ b/index.html
+@@ -5,83 +5,122 @@
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <title>Khan Honda Service Center</title>
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+   <style>
+     :root{--red:#d51010;--dark:#101521;--bg:#f4f6fb;--card:#fff;--muted:#6e7786;--ok:#178a46}
+     *{box-sizing:border-box}body{font-family:Montserrat,sans-serif;margin:0;background:var(--bg);color:var(--dark)}
+     .hero{background:linear-gradient(120deg,#121a2d 0%,#d51010 100%);color:#fff;padding:48px 20px}
+     .container{max-width:1150px;margin:0 auto}
+     h1,h2,h3{margin:.2rem 0}.hero p{opacity:.95;max-width:700px}
+     .btn{background:var(--red);color:#fff;border:0;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:600}
+     .btn.secondary{background:#24314d}.btn.ok{background:var(--ok)}
+     .grid{display:grid;gap:16px}.grid.cols-2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+     .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 3px 18px rgba(0,0,0,.08)}
+     label{font-size:.88rem;font-weight:600;display:block;margin:10px 0 4px}
+     input,select,textarea{width:100%;padding:10px;border:1px solid #c6cbd9;border-radius:8px;font:inherit}
+     table{width:100%;border-collapse:collapse;margin-top:12px;font-size:.9rem}
+     th,td{border:1px solid #d9deea;padding:8px;text-align:left}th{background:#eef2fb}
+     .hidden{display:none!important}.top-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:20px 0}
+     .pill{background:#e8edf8;color:#223;padding:7px 12px;border-radius:999px;font-size:.84rem}
+     .action-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+     .search-wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+     .invoice{border:2px dashed #b6bfd3;padding:14px;border-radius:10px;background:#fff}
+     .muted{color:var(--muted)}
++    .public-nav{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
++    .contact-bar{margin-top:14px;background:#ffffff1c;border:1px solid #ffffff42;padding:12px;border-radius:10px}
+ 
+     @media print{
+       body *{visibility:hidden}
+       #invoicePreview, #invoicePreview *{visibility:visible}
+       #invoicePreview{position:absolute;left:0;top:0;width:100%;border:none}
+     }
+ 
+     .modal-backdrop{position:fixed;inset:0;background:rgba(16,21,33,.55);display:flex;align-items:center;justify-content:center;z-index:9999}
+     .modal-card{background:#fff;border-radius:14px;max-width:430px;width:92%;padding:18px;box-shadow:0 16px 40px rgba(0,0,0,.24)}
+     .modal-title{margin:0 0 6px;font-size:1.1rem}.modal-sub{margin:0 0 12px;color:#5f6878;font-size:.9rem}
+     .modal-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px}
+   </style>
+ </head>
+ <body>
+   <section class="hero">
+     <div class="container">
+       <h1>Khan Honda Service Center</h1>
+       <p>Complete Bike Care Under One Roof From routine maintenance to major repairs — we keep your ride performing at its best.</p>
+       <button class="btn secondary" id="openAdminBtn">Admin Login</button><p style="margin-top:10px">Where Every Service Builds Trust..</p>
++      <div class="contact-bar">
++        <strong>Contact Us (WhatsApp):</strong>
++        <a href="https://wa.me/923021046816" style="color:#fff;font-weight:700;margin-left:6px">03021046816</a>
++      </div>
+     </div>
+   </section>
+ 
+   <main class="container" style="padding:20px">
+-    <div id="publicSection" class="grid cols-2">
+-      <div class="card"><h3>Engine & Tune-up</h3><p class="muted">Periodic tuning, carburetor checks, valve settings and performance optimization.</p></div>
+-      <div class="card"><h3>Oil & Brake Service</h3><p class="muted">Oil change, brake shoe replacement, cable and safety inspections.</p></div>
+-     <div class="card"><h3>General Inspection</h3><p class="muted">Full bike check-up including safety points, bolts tightening, and performance review.</p></div>
+-    <div class="card"><h3>Battery Replacement & Service</h3><p class="muted">Battery health check, charging system test, and replacement if needed.</p></div>
+-      <div class="card"><h3>Clutch & Gear Service</h3><p class="muted">Clutch plate inspection, cable adjustment, and smooth gear shifting optimization.</p></div>
+-      <div class="card"><h3>Chain & Sprocket Service</h3><p class="muted">Chain cleaning, lubrication, adjustment, and sprocket inspection for smooth power delivery.</p></div>
+-      <div class="card"><h3>Electrical System Check</h3><p class="muted">Battery testing, wiring inspection, lights, indicators, and ignition system diagnostics.</p></div>
+-      <div class="card"><h3>Fuel System Cleaning</h3><p class="muted">Carburetor cleaning, fuel line inspection, and improved fuel efficiency.</p></div>
+-      <div class="card"><h3>Suspension & Shock Service</h3><p class="muted">Front fork oil check, rear shock inspection, and ride comfort improvement.</p></div>
++    <div id="publicSection">
++      <div class="public-nav">
++        <button class="btn" id="showServicesBtn">Our Services</button>
++        <button class="btn secondary" id="showBookBtn">Book Appointment</button>
++      </div>
++
++      <section id="servicesPage" class="grid cols-2">
++        <div class="card"><h3>Engine & Tune-up</h3><p class="muted">Periodic tuning, carburetor checks, valve settings and performance optimization.</p></div>
++        <div class="card"><h3>Oil & Brake Service</h3><p class="muted">Oil change, brake shoe replacement, cable and safety inspections.</p></div>
++        <div class="card"><h3>General Inspection</h3><p class="muted">Full bike check-up including safety points, bolts tightening, and performance review.</p></div>
++        <div class="card"><h3>Battery Replacement & Service</h3><p class="muted">Battery health check, charging system test, and replacement if needed.</p></div>
++        <div class="card"><h3>Clutch & Gear Service</h3><p class="muted">Clutch plate inspection, cable adjustment, and smooth gear shifting optimization.</p></div>
++        <div class="card"><h3>Chain & Sprocket Service</h3><p class="muted">Chain cleaning, lubrication, adjustment, and sprocket inspection for smooth power delivery.</p></div>
++        <div class="card"><h3>Electrical System Check</h3><p class="muted">Battery testing, wiring inspection, lights, indicators, and ignition system diagnostics.</p></div>
++        <div class="card"><h3>Fuel System Cleaning</h3><p class="muted">Carburetor cleaning, fuel line inspection, and improved fuel efficiency.</p></div>
++        <div class="card"><h3>Suspension & Shock Service</h3><p class="muted">Front fork oil check, rear shock inspection, and ride comfort improvement.</p></div>
++      </section>
++
++      <section id="bookPage" class="card hidden">
++        <h3>Book Appointment</h3>
++        <p class="muted">Fill in your details and our team will confirm your appointment.</p>
++        <div class="grid cols-2">
++          <div><label>Your Name</label><input id="apptName" placeholder="Enter your full name"></div>
++          <div><label>Phone Number</label><input id="apptPhone" maxlength="11" inputmode="numeric" placeholder="03XXXXXXXXX"></div>
++          <div><label>Bike Type</label><input id="apptBikeType" placeholder="e.g. CD70, CG125"></div>
++          <div>
++            <label>Service You Need</label>
++            <select id="apptService">
++              <option value="">Select a service</option>
++              <option>Engine & Tune-up</option><option>Oil & Brake Service</option><option>General Inspection</option>
++              <option>Battery Replacement & Service</option><option>Clutch & Gear Service</option><option>Chain & Sprocket Service</option>
++              <option>Electrical System Check</option><option>Fuel System Cleaning</option><option>Suspension & Shock Service</option>
++            </select>
++          </div>
++          <div><label>Date</label><input id="apptDate" type="date"></div>
++          <div><label>Time</label><input id="apptTime" type="time"></div>
++        </div>
++        <label>Additional Notes</label>
++        <textarea id="apptNotes" rows="3" placeholder="Any special request..."></textarea>
++        <div class="action-row">
++          <button class="btn ok" id="submitAppointmentBtn">Submit Appointment</button>
++        </div>
++      </section>
+     </div>
+ 
+     <section id="adminPanel" class="hidden" style="margin-top:24px">
+       <div class="top-nav">
+         <h2>Admin Dashboard</h2>
+         <div class="action-row">
+           <button class="btn" id="showBilling">Client RCM & Billing</button>
+           <button class="btn secondary" id="showInventory">Inventory</button>
+           <button class="btn" id="logoutBtn">Logout</button>
+         </div>
+       </div>
+ 
+       <div id="billingPage" class="card">
+         <h3>Client RCM & Billing</h3>
+         <div class="search-wrap">
+           <div>
+             <label>Search by Phone Number</label>
+             <input id="searchPhone" maxlength="11" inputmode="numeric" placeholder="e.g. 03001234567" />
+           </div>
+           <div>
+             <label>Search by Bill Number (6 digit)</label>
+             <input id="searchBill" maxlength="6" inputmode="numeric" placeholder="e.g. 104522" />
+           </div>
+         </div>
+         <div class="action-row"><button class="btn" id="searchBtn">Search</button></div>
+@@ -223,50 +262,65 @@ async function loadData(){
+   const invSnap = await getDocs(collection(db, 'inventory'));
+   storage.inventory = invSnap.docs.map(d=>d.data());
+ }
+ 
+ async function saveClient(phone, data){
+   if(firebaseReady) return setDoc(doc(db,'clients',phone), data);
+   storage.clients[phone]=data;
+   localStorage.setItem('kh_clients', JSON.stringify(storage.clients));
+ }
+ async function saveInvoice(inv){
+   if(firebaseReady) return addDoc(collection(db,'invoices'), inv);
+   storage.invoices.push(inv);
+   localStorage.setItem('kh_invoices', JSON.stringify(storage.invoices));
+ }
+ async function saveInventoryItem(item){
+   if(firebaseReady) return setDoc(doc(db,'inventory',item.sku), item);
+   const ex=storage.inventory.find(i=>i.sku===item.sku); if(ex){Object.assign(ex,item);} else storage.inventory.push(item);
+   localStorage.setItem('kh_inventory', JSON.stringify(storage.inventory));
+ }
+ 
+ el('openAdminBtn').onclick=async ()=>{
+   const pass = await askPassword();
+   if(pass===null) return;
+   if(pass===ADMIN_PASSWORD){await loadData();el('publicSection').classList.add('hidden');el('adminPanel').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});} else alert('Wrong password');
+ };
++el('showServicesBtn').onclick=()=>{
++  el('servicesPage').classList.remove('hidden');
++  el('bookPage').classList.add('hidden');
++};
++el('showBookBtn').onclick=()=>{
++  el('bookPage').classList.remove('hidden');
++  el('servicesPage').classList.add('hidden');
++};
++el('submitAppointmentBtn').onclick=()=>{
++  const name=el('apptName').value.trim(), phone=el('apptPhone').value.trim(), bikeType=el('apptBikeType').value.trim();
++  const service=el('apptService').value, date=el('apptDate').value, time=el('apptTime').value;
++  if(!name || !phone || !bikeType || !service || !date || !time) return alert('Please fill all required fields.');
++  alert(`Appointment request submitted for ${name} on ${date} at ${time}.`);
++  ['apptName','apptPhone','apptBikeType','apptService','apptDate','apptTime','apptNotes'].forEach(id=>el(id).value='');
++};
+ el('logoutBtn').onclick=()=>{el('adminPanel').classList.add('hidden');el('publicSection').classList.remove('hidden');};
+ el('showBilling').onclick=()=>{el('billingPage').classList.remove('hidden');el('inventoryPage').classList.add('hidden');};
+ el('showInventory').onclick=()=>{el('inventoryPage').classList.remove('hidden');el('billingPage').classList.add('hidden');renderInventory();};
+ 
+ function generateBillNo(){let n; do{ n = Math.floor(100000+Math.random()*900000).toString(); }while(storage.invoices.find(x=>x.billNo===n)); return n;}
+ function now(){return new Date().toLocaleString();}
+ 
+ function addRow(service='',qty=1,price=0){
+   const tr=document.createElement('tr');
+   tr.innerHTML=`<td><input value="${service}"/></td><td><input type="number" min="1" value="${qty}"/></td><td><input type="number" min="0" value="${price}"/></td><td class="lt">0</td>`;
+   el('currentBillTable').querySelector('tbody').appendChild(tr);
+   [...tr.querySelectorAll('input')].forEach(i=>i.oninput=updateTotals);
+   updateTotals();
+ }
+ function updateTotals(){
+   let total=0; el('currentBillTable').querySelectorAll('tbody tr').forEach(tr=>{
+     const qty=Number(tr.children[1].querySelector('input').value||0), price=Number(tr.children[2].querySelector('input').value||0), line=qty*price;
+     tr.querySelector('.lt').innerText=line; total+=line;
+   }); el('billTotalText').innerText=`Total: PKR ${total}`;
+ }
+ function renderHistory(phone){
+   const rows=storage.invoices.filter(i=>i.phone===phone); const body=el('historyTable').querySelector('tbody'); body.innerHTML='';
+   rows.forEach(i=>{
+     const services = i.items.map(it=>`${it.service} (x${it.qty})`).join(', ');
+     const tr=document.createElement('tr');
+ 
+EOF
+)
