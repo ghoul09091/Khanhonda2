@@ -28,18 +28,27 @@
     .search-wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .invoice{border:2px dashed #b6bfd3;padding:14px;border-radius:10px;background:#fff}
     .muted{color:var(--muted)}
-    .public-nav{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+    .public-nav{display:grid;grid-template-columns:1fr;gap:10px;margin:16px 0;max-width:420px}
+    .public-nav .btn{text-align:left;font-size:1rem;padding:13px 16px}
     .footer-tools{margin:26px 0 10px}
     .footer-tools .card{padding:14px}
     .contact-bar{background:#fff;border:1px solid #d9deea;padding:12px;border-radius:10px}
     .checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin-top:8px}
     .checks label{display:flex;gap:8px;align-items:center;font-weight:500;margin:0}
     .checks input{width:auto}
+    .bike-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:12px}
+    .bike-card{overflow:hidden;padding:0}
+    .bike-card img{width:100%;height:180px;object-fit:cover;background:#e8edf8;display:block}
+    .bike-card-body{padding:14px}
+    .status-badge{display:inline-block;padding:5px 10px;border-radius:999px;font-size:.78rem;font-weight:700;background:#e8f7ee;color:#126b38}
+    .status-badge.sold{background:#fde8e8;color:#a31616}
+    .table-actions{display:flex;gap:6px;flex-wrap:wrap}
+    .file-help{font-size:.78rem;color:var(--muted);margin-top:4px}
 
     @media print{
       body *{visibility:hidden}
-      #invoicePreview, #invoicePreview *, #dashboardInvoicePreview, #dashboardInvoicePreview *{visibility:visible}
-      #invoicePreview, #dashboardInvoicePreview{position:absolute;left:0;top:0;width:100%;border:none}
+      #invoicePreview, #invoicePreview *{visibility:visible}
+      #invoicePreview{position:absolute;left:0;top:0;width:100%;border:none}
     }
 
     .modal-backdrop{position:fixed;inset:0;background:rgba(16,21,33,.55);display:flex;align-items:center;justify-content:center;z-index:9999}
@@ -62,8 +71,10 @@
   <main class="container" style="padding:20px">
     <div id="publicSection">
       <div class="public-nav">
-        <button class="btn" id="showServicesBtn">Our Services</button>
-        <button class="btn secondary" id="showBookBtn">Book Appointment</button>
+        <button class="btn" id="showServicesBtn">1. Our Services</button>
+        <button class="btn secondary" id="showBookBtn">2. Book Appointment</button>
+        <button class="btn secondary" id="showBikeSalesBtn">3. Bikes for Sale</button>
+        <button class="btn secondary" id="showFeedbackBtn">4. Leave Feedback</button>
       </div>
 
       <section id="servicesPage" class="grid cols-2">
@@ -76,6 +87,12 @@
         <div class="card"><h3>Electrical System Check</h3><p class="muted">Battery testing, wiring inspection, lights, indicators, and ignition system diagnostics.</p></div>
         <div class="card"><h3>Fuel System Cleaning</h3><p class="muted">Carburetor cleaning, fuel line inspection, and improved fuel efficiency.</p></div>
         <div class="card"><h3>Suspension & Shock Service</h3><p class="muted">Front fork oil check, rear shock inspection, and ride comfort improvement.</p></div>
+      </section>
+
+      <section id="bikeSalesPage" class="card hidden">
+        <h3>Bike Sale Purchase</h3>
+        <p class="muted">Browse bikes currently listed by Khan Honda Service Center. Contact us on WhatsApp for inspection, purchase, or sale inquiries.</p>
+        <div id="bikeSalesList" class="bike-grid"></div>
       </section>
 
       <section id="bookPage" class="card hidden">
@@ -106,6 +123,13 @@
           <button class="btn ok" id="submitAppointmentBtn">Submit Appointment</button>
         </div>
       </section>
+
+      <section id="feedbackPage" class="card hidden">
+        <h3>Leave Feedback</h3>
+        <p class="muted">Share your service experience with Khan Honda Service Center.</p>
+        <textarea id="publicFeedbackText" rows="3" placeholder="Write your feedback..."></textarea>
+        <div class="action-row"><button class="btn" id="savePublicFeedbackBtn">Submit Feedback</button></div>
+      </section>
     </div>
 
     <section id="adminPanel" class="hidden" style="margin-top:24px">
@@ -115,12 +139,13 @@
           <button class="btn secondary" id="showDashboard">Dashboard</button>
           <button class="btn" id="showBilling">Client RCM & Billing</button>
           <button class="btn secondary" id="showInventory">Inventory</button>
+          <button class="btn secondary" id="showBikeAdmin">Bike Sales</button>
           <button class="btn secondary" id="showNotifications">Notification Center</button>
           <button class="btn" id="logoutBtn">Logout</button>
         </div>
       </div>
 
-      <div id="billingPage" class="card hidden">
+      <div id="billingPage" class="card">
         <h3>Client RCM & Billing</h3>
         <div class="search-wrap">
           <div>
@@ -174,26 +199,45 @@
           <div><label>Unit Price (PKR)</label><input id="invPrice" type="number" min="0"></div>
         </div>
         <div class="action-row"><button class="btn" id="addInvBtn">Add / Update Item</button></div>
-        <table id="invTable"><thead><tr><th>SKU</th><th>Name</th><th>Qty</th><th>Unit Price</th><th>Stock Value</th></tr></thead><tbody></tbody></table>
+        <input id="invOriginalSku" type="hidden">
+        <table id="invTable"><thead><tr><th>SKU</th><th>Name</th><th>Qty</th><th>Unit Price</th><th>Stock Value</th><th>Action</th></tr></thead><tbody></tbody></table>
+      </div>
+
+      <div id="bikeAdminPage" class="card hidden">
+        <h3>Bike Sale Purchase Admin</h3>
+        <p class="muted">Add, edit, remove, and publish bike sale listings shown on the public Bike Sale Purchase page.</p>
+        <input id="bikeOriginalId" type="hidden">
+        <div class="grid cols-2">
+          <div><label>Bike Name / Model</label><input id="bikeName" placeholder="e.g. Honda CG125 2023"></div>
+          <div><label>Price (PKR)</label><input id="bikePrice" type="number" min="0" placeholder="e.g. 250000"></div>
+          <div>
+            <label>Picture URL</label>
+            <input id="bikeImage" placeholder="Paste bike picture link">
+            <div class="file-help">Paste a link or upload a picture below.</div>
+          </div>
+          <div><label>Status</label><select id="bikeStatus"><option value="available">Available for Sale</option><option value="sold">Sold</option></select></div>
+          <div>
+            <label>Upload Bike Picture</label>
+            <input id="bikeImageFile" type="file" accept="image/*">
+            <div class="file-help">Uploaded pictures are saved with the listing for easy copy/paste use.</div>
+          </div>
+        </div>
+        <label>Details</label>
+        <textarea id="bikeDetails" rows="3" placeholder="Condition, registration, mileage, color, documents, etc."></textarea>
+        <div class="action-row">
+          <button class="btn" id="saveBikeBtn">Add / Update Bike</button>
+          <button class="btn secondary" id="removeBikePictureBtn">Remove Picture</button>
+          <button class="btn secondary" id="clearBikeFormBtn">Clear Form</button>
+        </div>
+        <table id="bikeAdminTable"><thead><tr><th>Picture</th><th>Bike</th><th>Price</th><th>Status</th><th>Details</th><th>Action</th></tr></thead><tbody></tbody></table>
       </div>
 
       <div id="notificationsPage" class="card hidden">
         <h3>Notification Center</h3>
-        <p class="muted">Unread appointment requests and feedback appear under New Notifications. Once marked as read, they move to Older Notifications and remain visible there.</p>
-
-        <h4>New Notifications</h4>
-        <table id="newNotifyTable"><thead><tr><th>Type</th><th>Date/Time</th><th>Summary</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table>
-
-        <h4>Older Notifications</h4>
-        <table id="olderNotifyTable"><thead><tr><th>Type</th><th>Date/Time</th><th>Summary</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table>
+        <table id="notifyTable"><thead><tr><th>Type</th><th>Date/Time</th><th>Summary</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table>
         <div id="notifyDetail" class="invoice hidden" style="margin-top:14px"></div>
-
-        <h4>Appointment History</h4>
-        <table id="appointmentHistoryTable"><thead><tr><th>Submitted</th><th>Name</th><th>Phone</th><th>Bike</th><th>Appointment</th><th>Services</th><th>Notes</th></tr></thead><tbody></tbody></table>
-
-        <h4>Feedback History</h4>
-        <table id="feedbackHistoryTable"><thead><tr><th>Submitted</th><th>Feedback</th></tr></thead><tbody></tbody></table>
       </div>
+
       <div id="dashboardPage" class="card">
         <h3>Dashboard Overview</h3>
         <div class="grid cols-2">
@@ -208,9 +252,7 @@
           <button class="btn" id="filterDateBtn">Filter by Date</button>
         </div>
         <table id="dashboardHistoryTable"><thead><tr><th>Date/Time</th><th>Name</th><th>Bill Amount</th><th>Services Done</th></tr></thead><tbody></tbody></table>
-        <div id="dashboardInvoicePreview" class="invoice hidden" style="margin-top:14px"></div>
       </div>
-
     </section>
 
     <footer class="footer-tools" id="publicFooterTools">
@@ -218,17 +260,15 @@
         <strong>Contact Us (WhatsApp):</strong>
         <a href="https://wa.me/923021046816" style="font-weight:700;margin-left:6px">03021046816</a>
       </div>
-      <div class="card" style="margin-top:12px">
-        <h4>Leave Feedback</h4>
-        <textarea id="publicFeedbackText" rows="3" placeholder="Write your feedback..."></textarea>
-        <div class="action-row"><button class="btn" id="savePublicFeedbackBtn">Submit Feedback</button></div>
-      </div>
     </footer>
   </main>
 
 <div id="modalRoot" class="hidden"></div>
 
 <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getFirestore, doc, setDoc, deleteDoc, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
 const ADMIN_PASSWORD = '1122';
 const firebaseConfig = {
   apiKey: "AIzaSyBydNn5GqM0Wm_giiJMnfndoTyQx4w_APE",
@@ -237,64 +277,31 @@ const firebaseConfig = {
   storageBucket: "khan-honda-service-center.firebasestorage.app",
   messagingSenderId: "68876808026",
   appId: "1:68876808026:web:a9f3acb0eed06044918d63",
-
 };
 
 let db = null;
 let firebaseReady = false;
-let firebaseInitPromise = null;
-const firestoreApi = {};
-function initializeFirebase(){
-  if(firebaseInitPromise) return firebaseInitPromise;
-  if(!firebaseConfig.apiKey || firebaseConfig.apiKey === 'YOUR_API_KEY'){
-    firebaseInitPromise = Promise.resolve(false);
-    return firebaseInitPromise;
-  }
-
-  const importModules = Promise.all([
-    import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js'),
-    import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js')
-  ]);
-  const timeout = new Promise((_, reject)=>setTimeout(()=>reject(new Error('Firebase initialization timed out')), 3500));
-
-  firebaseInitPromise = Promise.race([importModules, timeout]).then(([appModule, firestoreModule])=>{
-    const app = appModule.initializeApp(firebaseConfig);
-    db = firestoreModule.getFirestore(app);
-    Object.assign(firestoreApi, {
-      collection: firestoreModule.collection,
-      doc: firestoreModule.doc,
-      getDocs: firestoreModule.getDocs,
-      setDoc: firestoreModule.setDoc
-    });
-    firebaseReady = true;
-    return true;
-  }).catch(err=>{
-    console.warn('Firebase could not be initialized. The app will continue with localStorage only.', err);
-    db = null;
-    firebaseReady = false;
-    return false;
-  });
-
-  return firebaseInitPromise;
+if (firebaseConfig.apiKey !== 'YOUR_API_KEY') {
+  const app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+  firebaseReady = true;
 }
 
-const storage = { clients: {}, invoices: [], inventory: [], appointments: [], feedback: [], notifications: [] };
+const storage = { clients: {}, invoices: [], inventory: [], appointments: [], feedback: [], notifications: [], bikes: [] };
 const el=id=>document.getElementById(id);
-const escapeHtml=value=>String(value ?? '').replace(/[&<>"']/g, ch=>({
-  '&':'&amp;',
-  '<':'&lt;',
-  '>':'&gt;',
-  '"':'&quot;',
-  "'":'&#39;'
-}[ch]));
-
 
 function showModal({title, subtitle='', bodyHTML='', actions=[]}){
   const root=el('modalRoot');
   root.classList.remove('hidden');
   root.innerHTML=`<div class="modal-backdrop"><div class="modal-card"><h4 class="modal-title">${title}</h4><p class="modal-sub">${subtitle}</p>${bodyHTML}<div class="modal-actions"></div></div></div>`;
   const actionsWrap=root.querySelector('.modal-actions');
-  actions.forEach(a=>{const b=document.createElement('button');b.className=`btn ${a.secondary?'secondary':''}`.trim();b.textContent=a.label;b.onclick=()=>a.onClick();actionsWrap.appendChild(b);});
+  actions.forEach(a=>{
+    const b=document.createElement('button');
+    b.className=`btn ${a.secondary?'secondary':''}`.trim();
+    b.textContent=a.label;
+    b.onclick=()=>a.onClick();
+    actionsWrap.appendChild(b);
+  });
 }
 function closeModal(){const root=el('modalRoot');root.classList.add('hidden');root.innerHTML='';}
 function askPassword(){
@@ -311,20 +318,14 @@ function askPassword(){
     setTimeout(()=>el('adminPasswordInput')?.focus(),10);
   });
 }
-function askClientType(){
-  return new Promise(resolve=>{
-    showModal({
-      title:'Client Not Found',
-      subtitle:'Choose how you want to continue billing.',
-      actions:[
-        {label:'Add New Client', onClick:()=>{closeModal();resolve('new');}},
-        {label:'Walk-in Client', secondary:true, onClick:()=>{closeModal();resolve('walkin');}}
-      ]
-    });
+function showNewClientNotice(phone){
+  showModal({
+    title:'Client Not Found',
+    subtitle:'Walk-in billing has been removed. Please add the client details before saving the invoice.',
+    bodyHTML:`<p class="muted">A new client record will be created for <b>${phone}</b>.</p>`,
+    actions:[{label:'Add Client Details', onClick:()=>closeModal()}]
   });
 }
-
-
 
 function toggleSearchMode(){
   const hasPhone = el('searchPhone').value.trim().length>0;
@@ -341,328 +342,205 @@ el('searchBill').addEventListener('input',()=>{
   toggleSearchMode();
 });
 
-function readLocalArray(key){
-  try{
-    const value = JSON.parse(localStorage.getItem(key) || '[]');
-    return Array.isArray(value) ? value : [];
-  }catch(err){
-    console.warn(`Invalid localStorage array for ${key}. Resetting to an empty list.`, err);
-    return [];
-  }
+function loadLocalExtras(){
+  storage.appointments = JSON.parse(localStorage.getItem('kh_appointments') || '[]');
+  storage.feedback = JSON.parse(localStorage.getItem('kh_feedback') || '[]');
+  storage.notifications = JSON.parse(localStorage.getItem('kh_notifications') || '[]');
+  storage.bikes = JSON.parse(localStorage.getItem('kh_bikes') || '[]');
 }
-function readLocalObject(key){
-  try{
-    const value = JSON.parse(localStorage.getItem(key) || '{}');
-    return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
-  }catch(err){
-    console.warn(`Invalid localStorage object for ${key}. Resetting to an empty object.`, err);
-    return {};
-  }
-}
-function makeId(prefix){
-  return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
-}
-function normalizeExtraRecord(collectionName, item){
-  if(item.id) return item;
-  return {...item, id: makeId(collectionName)};
-}
-function recordTimeValue(item){
-  const raw = item.createdAt || (item.date ? `${item.date || ''} ${item.time || ''}`.trim() : item.time) || '';
-  const value = new Date(raw).getTime();
-  return Number.isNaN(value) ? 0 : value;
-}
-function sortNewest(items){
-  return items.sort((a,b)=>recordTimeValue(b)-recordTimeValue(a));
-}
-function invoiceTimeValue(inv){
-  const raw = inv.time || inv.createdAt || '';
-  const parsed = new Date(raw).getTime();
-  return Number.isNaN(parsed) ? 0 : parsed;
-}
-function sortInvoices(items){
-  return items.sort((a,b)=>invoiceTimeValue(b)-invoiceTimeValue(a));
-}
-function invoiceDocId(inv){
-  return String(inv.billNo || inv.id || makeId('invoice'));
-}
-function normalizeInvoice(inv){
-  const id = invoiceDocId(inv);
-  return {...inv, id, items:Array.isArray(inv.items) ? inv.items : []};
-}
-function invoiceMatchesClient(inv, phone){
-  return String(inv.phone || '').trim() === String(phone || '').trim();
-}
-function servicesSummary(items=[]){
-  return items.map(i=>`${i.service || 'Service'} (x${i.qty || 0})`).join(', ');
-}
-function invoiceDateKey(inv){
-  const raw = inv.time || inv.createdAt || '';
-  const parsed = new Date(raw);
-  if(!Number.isNaN(parsed.getTime())) return parsed.toISOString().slice(0,10);
-  const match = String(raw).match(/(\d{4})-(\d{2})-(\d{2})/);
-  return match ? match[0] : '';
-}
-function isInvoiceToday(inv){
-  return invoiceDateKey(inv) === new Date().toISOString().slice(0,10);
-}
-function notificationId(type, payload){
-  return `notification_${type}_${payload.id || makeId(type)}`;
-}
-function notificationFromRecord(type, payload){
-  return {
-    id: notificationId(type, payload),
-    type,
-    time: payload.createdAt || payload.time || now(),
-    payload,
-    read:false
-  };
-}
-async function writeFirestoreDoc(collectionName, id, data){
-  await initializeFirebase();
-  if(!firebaseReady) return false;
-  try{
-    await firestoreApi.setDoc(firestoreApi.doc(db, collectionName, id), data);
-    return true;
-  }catch(err){
-    console.warn(`Could not sync ${collectionName}/${id} to Firestore. Saved locally instead.`, err);
-    return false;
-  }
-}
-async function loadSyncedArray(collectionName, localKey){
-  const localItems = readLocalArray(localKey).map(item=>normalizeExtraRecord(collectionName, item));
-  await initializeFirebase();
-  if(!firebaseReady){
-    const normalized = sortNewest(localItems);
-    localStorage.setItem(localKey, JSON.stringify(normalized));
-    return normalized;
-  }
-
-  const merged = new Map();
-  try{
-    const snap = await firestoreApi.getDocs(firestoreApi.collection(db, collectionName));
-    snap.docs.forEach(d=>merged.set(d.id, {...d.data(), id:d.id}));
-  }catch(err){
-    console.warn(`Could not load ${collectionName} from Firestore. Using local cache.`, err);
-  }
-
-  await Promise.all(localItems.map(item=>{
-    if(merged.has(item.id)) return Promise.resolve();
-    merged.set(item.id, item);
-    return writeFirestoreDoc(collectionName, item.id, item);
-  }));
-
-  const syncedItems = sortNewest([...merged.values()]);
-  localStorage.setItem(localKey, JSON.stringify(syncedItems));
-  return syncedItems;
-}
-async function loadSyncedInvoices(){
-  const localInvoices = readLocalArray('kh_invoices').map(normalizeInvoice);
-  await initializeFirebase();
-  if(!firebaseReady){
-    const normalized = sortInvoices(localInvoices);
-    localStorage.setItem('kh_invoices', JSON.stringify(normalized));
-    return normalized;
-  }
-
-  const merged = new Map();
-  try{
-    const snap = await firestoreApi.getDocs(firestoreApi.collection(db, 'invoices'));
-    snap.docs.forEach(d=>{
-      const invoice = normalizeInvoice({...d.data(), id:d.data().id || d.id});
-      merged.set(invoice.id, invoice);
-    });
-  }catch(err){
-    console.warn('Could not load invoices from Firestore. Using local invoice cache.', err);
-  }
-
-  await Promise.all(localInvoices.map(inv=>{
-    if(merged.has(inv.id)) return Promise.resolve();
-    merged.set(inv.id, inv);
-    return writeFirestoreDoc('invoices', inv.id, inv);
-  }));
-
-  const syncedInvoices = sortInvoices([...merged.values()]);
-  localStorage.setItem('kh_invoices', JSON.stringify(syncedInvoices));
-  return syncedInvoices;
-}
-function notificationPayloadMatches(type, notificationPayload, payload){
-  if(notificationPayload?.id && notificationPayload.id===payload.id) return true;
-  if(type==='feedback') return notificationPayload?.text===payload.text && notificationPayload?.createdAt===payload.createdAt;
-  return notificationPayload?.phone===payload.phone
-    && notificationPayload?.name===payload.name
-    && notificationPayload?.date===payload.date
-    && notificationPayload?.time===payload.time;
-}
-function hasNotificationFor(type, payload, notifications){
-  const expectedId = notificationId(type, payload);
-  return notifications.some(n=>n.id===expectedId || (n.type===type && notificationPayloadMatches(type, n.payload, payload)));
-}
-async function rebuildMissingNotifications(){
-  const merged = new Map(storage.notifications.map(n=>[n.id, n]));
-  const existing = [...merged.values()];
-  const missing = [];
-
-  storage.appointments.forEach(appointment=>{
-    if(!hasNotificationFor('appointment', appointment, existing)){
-      const notification = notificationFromRecord('appointment', appointment);
-      merged.set(notification.id, notification);
-      existing.push(notification);
-      missing.push(notification);
+async function loadPublicData(){
+  loadLocalExtras();
+  if(firebaseReady){
+    try{
+      const bikesSnap = await getDocs(collection(db, 'bikes'));
+      storage.bikes = bikesSnap.docs.map(d=>({id:d.id, ...d.data()}));
+    }catch(err){
+      console.warn('Firebase bike load failed; using local bike listings:', err);
     }
-  });
-
-  storage.feedback.forEach(feedback=>{
-    if(!hasNotificationFor('feedback', feedback, existing)){
-      const notification = notificationFromRecord('feedback', feedback);
-      merged.set(notification.id, notification);
-      existing.push(notification);
-      missing.push(notification);
-    }
-  });
-
-  storage.notifications = sortNewest([...merged.values()]);
-  localStorage.setItem('kh_notifications', JSON.stringify(storage.notifications));
-  await Promise.all(missing.map(n=>writeFirestoreDoc('notifications', n.id, n)));
+  }
+  renderBikeSales();
 }
-
-
-function loadLocalCache(){
-  storage.clients = readLocalObject('kh_clients');
-  storage.inventory = readLocalArray('kh_inventory');
-  storage.invoices = sortInvoices(readLocalArray('kh_invoices').map(normalizeInvoice));
-  storage.appointments = sortNewest(readLocalArray('kh_appointments').map(item=>normalizeExtraRecord('appointments', item)));
-  storage.feedback = sortNewest(readLocalArray('kh_feedback').map(item=>normalizeExtraRecord('feedback', item)));
-  storage.notifications = sortNewest(readLocalArray('kh_notifications').map(item=>normalizeExtraRecord('notifications', item)));
-}
-
 async function loadData(){
-  loadLocalCache();
-  storage.appointments = await loadSyncedArray('appointments', 'kh_appointments');
-  storage.feedback = await loadSyncedArray('feedback', 'kh_feedback');
-  storage.notifications = await loadSyncedArray('notifications', 'kh_notifications');
-  storage.invoices = await loadSyncedInvoices();
-  await rebuildMissingNotifications();
+  loadLocalExtras();
+  storage.clients = JSON.parse(localStorage.getItem('kh_clients') || '{}');
+  storage.invoices = JSON.parse(localStorage.getItem('kh_invoices') || '[]');
+  storage.inventory = JSON.parse(localStorage.getItem('kh_inventory') || '[]');
   if(!firebaseReady) return;
-
   try{
-    const clientsSnap = await firestoreApi.getDocs(firestoreApi.collection(db, 'clients'));
+    const clientsSnap = await getDocs(collection(db, 'clients'));
+    storage.clients = {};
     clientsSnap.forEach(d=>storage.clients[d.id]=d.data());
-    localStorage.setItem('kh_clients', JSON.stringify(storage.clients));
-  }catch(err){
-    console.warn('Could not load clients from Firestore. Using local client cache.', err);
-  }
 
-  try{
-    const invSnap = await firestoreApi.getDocs(firestoreApi.collection(db, 'inventory'));
-    const mergedInventory = new Map(storage.inventory.map(item=>[item.sku, item]));
-    invSnap.docs.forEach(d=>mergedInventory.set(d.id, {...d.data(), sku:d.data().sku || d.id}));
-    storage.inventory = [...mergedInventory.values()];
-    localStorage.setItem('kh_inventory', JSON.stringify(storage.inventory));
+    const invoicesSnap = await getDocs(collection(db, 'invoices'));
+    storage.invoices = invoicesSnap.docs.map(d=>d.data());
+
+    const invSnap = await getDocs(collection(db, 'inventory'));
+    storage.inventory = invSnap.docs.map(d=>d.data());
+
+    const bikesSnap = await getDocs(collection(db, 'bikes'));
+    storage.bikes = bikesSnap.docs.map(d=>({id:d.id, ...d.data()}));
   }catch(err){
-    console.warn('Could not load inventory from Firestore. Using local inventory cache.', err);
+    console.warn('Firebase data load failed; using local saved data:', err);
   }
 }
 
 async function saveClient(phone, data){
   storage.clients[phone]=data;
   localStorage.setItem('kh_clients', JSON.stringify(storage.clients));
-  writeFirestoreDoc('clients', phone, data);
+  if(firebaseReady){
+    try{ await setDoc(doc(db,'clients',phone), data); }catch(err){ console.warn('Firebase client save failed:', err); }
+  }
 }
 async function saveInvoice(inv){
-  const invoice = normalizeInvoice(inv);
-  const index = storage.invoices.findIndex(existing=>existing.id===invoice.id || existing.billNo===invoice.billNo);
-  if(index>=0) storage.invoices[index]=invoice; else storage.invoices.unshift(invoice);
-  storage.invoices = sortInvoices(storage.invoices);
   localStorage.setItem('kh_invoices', JSON.stringify(storage.invoices));
-  writeFirestoreDoc('invoices', invoice.id, invoice);
-}
-async function saveSyncedRecord(collectionName, localKey, item){
-  const cached = storage[collectionName] || [];
-  const array = cached.length ? cached : readLocalArray(localKey).map(record=>normalizeExtraRecord(collectionName, record));
-  const index = array.findIndex(existing=>existing.id===item.id);
-  if(index>=0) array[index]=item; else array.unshift(item);
-  storage[collectionName] = sortNewest(array);
-  localStorage.setItem(localKey, JSON.stringify(storage[collectionName]));
-  writeFirestoreDoc(collectionName, item.id, item);
+  if(firebaseReady){
+    try{ await addDoc(collection(db,'invoices'), inv); }catch(err){ console.warn('Firebase invoice save failed:', err); }
+  }
 }
 function persistExtra(){
   localStorage.setItem('kh_appointments', JSON.stringify(storage.appointments));
   localStorage.setItem('kh_feedback', JSON.stringify(storage.feedback));
   localStorage.setItem('kh_notifications', JSON.stringify(storage.notifications));
-}
-async function syncNotification(notification){
-  storage.notifications = sortNewest(storage.notifications);
-  localStorage.setItem('kh_notifications', JSON.stringify(storage.notifications));
-  writeFirestoreDoc('notifications', notification.id, notification);
-}
-async function addNotification(type, payload){
-  if(!storage.notifications.length){
-    storage.notifications = readLocalArray('kh_notifications').map(n=>normalizeExtraRecord('notifications', n));
-  }
-  const notification=notificationFromRecord(type, payload);
-  const index = storage.notifications.findIndex(n=>n.id===notification.id);
-  if(index>=0) storage.notifications[index]={...storage.notifications[index], payload};
-  else storage.notifications.unshift(notification);
-  await syncNotification(index>=0 ? storage.notifications[index] : notification);
+  localStorage.setItem('kh_bikes', JSON.stringify(storage.bikes));
 }
 
-async function saveInventoryItem(item){
+function addNotification(type, payload){
+  storage.notifications.unshift({id:Date.now().toString(), type, time:now(), payload, read:false});
+  persistExtra();
+}
+
+async function saveInventoryItem(item, originalSku=''){
+  if(originalSku && originalSku !== item.sku){
+    storage.inventory = storage.inventory.filter(i=>i.sku !== originalSku);
+    if(firebaseReady){
+      try{ await deleteDoc(doc(db,'inventory',originalSku)); }catch(err){ console.warn('Firebase old SKU delete failed:', err); }
+    }
+  }
   const ex=storage.inventory.find(i=>i.sku===item.sku);
   if(ex){Object.assign(ex,item);} else storage.inventory.push(item);
   localStorage.setItem('kh_inventory', JSON.stringify(storage.inventory));
-  writeFirestoreDoc('inventory', item.sku, item);
+  if(firebaseReady){
+    try{ await setDoc(doc(db,'inventory',item.sku), item); }catch(err){ console.warn('Firebase inventory save failed:', err); }
+  }
+}
+async function saveBikeListing(bike){
+  const ex=storage.bikes.find(b=>b.id===bike.id);
+  if(ex){Object.assign(ex,bike);} else storage.bikes.unshift(bike);
+  persistExtra();
+  if(firebaseReady){
+    try{
+      await setDoc(doc(db,'bikes',bike.id), bike);
+    }catch(err){
+      console.warn('Bike saved locally, but Firebase bike save failed:', err);
+      alert('Bike saved on this device. Firebase did not accept the picture/details, so it may not appear on other devices until Firebase rules/storage are fixed.');
+    }
+  }
+}
+async function removeBikeListing(id){
+  storage.bikes = storage.bikes.filter(b=>b.id!==id);
+  persistExtra();
+  if(firebaseReady){
+    try{ await deleteDoc(doc(db,'bikes',id)); }catch(err){ console.warn('Firebase bike delete failed:', err); }
+  }
 }
 
-loadLocalCache();
-
-function showAdminPage(pageId){
-  ['dashboardPage','billingPage','inventoryPage','notificationsPage'].forEach(id=>el(id).classList.toggle('hidden', id!==pageId));
-  if(pageId==='dashboardPage') renderDashboard();
-  if(pageId==='inventoryPage') renderInventory();
-  if(pageId==='notificationsPage') renderNotifications();
-}
 el('openAdminBtn').onclick=async ()=>{
   const pass = await askPassword();
   if(pass===null) return;
-  if(pass===ADMIN_PASSWORD){await loadData();el('publicSection').classList.add('hidden');el('adminPanel').classList.remove('hidden');el('publicFooterTools').classList.add('hidden');document.querySelector('.hero').classList.add('hidden');showAdminPage('dashboardPage');window.scrollTo({top:0,behavior:'smooth'});} else alert('Wrong password');
+  if(pass===ADMIN_PASSWORD){
+    await loadData();
+    el('publicSection').classList.add('hidden');
+    el('adminPanel').classList.remove('hidden');
+    el('publicFooterTools').classList.add('hidden');
+    document.querySelector('.hero').classList.add('hidden');
+    ['billingPage','inventoryPage','notificationsPage','bikeAdminPage'].forEach(id=>el(id).classList.add('hidden'));
+    el('dashboardPage').classList.remove('hidden');
+    window.scrollTo({top:0,behavior:'smooth'});
+    renderNotifications();
+    renderDashboard();
+    renderBikeSales();
+  } else alert('Wrong password');
 };
 el('publicHomeBtn').onclick=()=>{el('logoutBtn').click(); window.scrollTo({top:0,behavior:'smooth'});};
-el('showServicesBtn').onclick=()=>{
-  el('servicesPage').classList.remove('hidden');
-  el('bookPage').classList.add('hidden');
-};
-el('showBookBtn').onclick=()=>{
-  el('bookPage').classList.remove('hidden');
-  el('servicesPage').classList.add('hidden');
-};
-el('submitAppointmentBtn').onclick=async ()=>{
-  const name=el('apptName').value.trim(), rawPhone=el('apptPhone').value.trim(), bikeType=el('apptBikeType').value.trim();
+
+function showPublicPage(pageId){
+  ['servicesPage','bookPage','bikeSalesPage','feedbackPage'].forEach(id=>el(id).classList.toggle('hidden', id!==pageId));
+  if(pageId==='bikeSalesPage') renderBikeSales();
+}
+el('showServicesBtn').onclick=()=>showPublicPage('servicesPage');
+el('showBookBtn').onclick=()=>showPublicPage('bookPage');
+el('showBikeSalesBtn').onclick=()=>showPublicPage('bikeSalesPage');
+el('showFeedbackBtn').onclick=()=>showPublicPage('feedbackPage');
+
+el('submitAppointmentBtn').onclick=()=>{
+  const name=el('apptName').value.trim(), phone=el('apptPhone').value.trim(), bikeType=el('apptBikeType').value.trim();
   const date=el('apptDate').value, time=el('apptTime').value;
   const services=[...document.querySelectorAll('.apptServiceOpt:checked')].map(x=>x.value);
-  const phone = rawPhone.replace(/\D/g,'').slice(0,11);
-  el('apptPhone').value = phone;
-  if(!name || phone.length!==11 || !bikeType || !services.length || !date || !time) return alert('Please fill all required fields and enter an 11 digit phone number.');
-  const appointment={id:makeId('appointment'),name,phone,bikeType,services,date,time,notes:el('apptNotes').value.trim(),createdAt:now()};
-  await saveSyncedRecord('appointments', 'kh_appointments', appointment);
-  await addNotification('appointment', appointment);
+  el('apptPhone').value = phone.replace(/\D/g,'').slice(0,11);
+  if(!name || !phone || !bikeType || !services.length || !date || !time) return alert('Please fill all required fields.');
+  const appointment={name,phone,bikeType,services,date,time,notes:el('apptNotes').value.trim(),createdAt:now()};
+  storage.appointments.push(appointment);
+  persistExtra();
+  addNotification('appointment', appointment);
   alert(`Appointment request submitted for ${name} on ${date} at ${time}.\nServices: ${services.join(', ')}`);
   ['apptName','apptPhone','apptBikeType','apptDate','apptTime','apptNotes'].forEach(id=>el(id).value='');
   document.querySelectorAll('.apptServiceOpt').forEach(x=>x.checked=false);
 };
-el('savePublicFeedbackBtn').onclick=async ()=>{
+el('savePublicFeedbackBtn').onclick=()=>{
   const text=el('publicFeedbackText').value.trim();
   if(!text) return alert('Please write feedback first.');
-  const feedback={id:makeId('feedback'), text, createdAt:now()};
-  await saveSyncedRecord('feedback', 'kh_feedback', feedback);
+  const feedback={text, createdAt:now()};
+  storage.feedback.push(feedback);
   el('publicFeedbackText').value='';
-  await addNotification('feedback', feedback);
+  persistExtra();
+  addNotification('feedback', feedback);
   alert('Feedback submitted.');
 };
-el('logoutBtn').onclick=()=>{el('adminPanel').classList.add('hidden');el('publicSection').classList.remove('hidden');el('publicFooterTools').classList.remove('hidden');document.querySelector('.hero').classList.remove('hidden');};
-el('showInventory').onclick=()=>showAdminPage('inventoryPage');
-el('showBilling').onclick=()=>showAdminPage('billingPage');
-el('showNotifications').onclick=()=>showAdminPage('notificationsPage');
-el('showDashboard').onclick=()=>showAdminPage('dashboardPage');
+el('logoutBtn').onclick=()=>{
+  el('adminPanel').classList.add('hidden');
+  el('publicSection').classList.remove('hidden');
+  el('publicFooterTools').classList.remove('hidden');
+  document.querySelector('.hero').classList.remove('hidden');
+};
+el('showInventory').onclick=()=>{
+  el('inventoryPage').classList.remove('hidden');
+  el('billingPage').classList.add('hidden');
+  el('notificationsPage').classList.add('hidden');
+  el('dashboardPage').classList.add('hidden');
+  el('bikeAdminPage').classList.add('hidden');
+  renderInventory();
+};
+el('showBilling').onclick=()=>{
+  el('billingPage').classList.remove('hidden');
+  el('inventoryPage').classList.add('hidden');
+  el('notificationsPage').classList.add('hidden');
+  el('dashboardPage').classList.add('hidden');
+  el('bikeAdminPage').classList.add('hidden');
+};
+el('showNotifications').onclick=()=>{
+  el('notificationsPage').classList.remove('hidden');
+  el('billingPage').classList.add('hidden');
+  el('inventoryPage').classList.add('hidden');
+  el('dashboardPage').classList.add('hidden');
+  el('bikeAdminPage').classList.add('hidden');
+  renderNotifications();
+};
+el('showDashboard').onclick=()=>{
+  el('dashboardPage').classList.remove('hidden');
+  el('billingPage').classList.add('hidden');
+  el('inventoryPage').classList.add('hidden');
+  el('notificationsPage').classList.add('hidden');
+  el('bikeAdminPage').classList.add('hidden');
+  renderDashboard();
+};
+el('showBikeAdmin').onclick=()=>{
+  el('bikeAdminPage').classList.remove('hidden');
+  el('billingPage').classList.add('hidden');
+  el('inventoryPage').classList.add('hidden');
+  el('notificationsPage').classList.add('hidden');
+  el('dashboardPage').classList.add('hidden');
+  renderBikeAdmin();
+};
 el('filterAllBtn').onclick=()=>renderDashboardTable('all');
 el('filterTodayBtn').onclick=()=>renderDashboardTable('today');
 el('filterDateBtn').onclick=()=>renderDashboardTable('date');
@@ -673,36 +551,71 @@ el('editClientBtn').onclick=()=>{
 
 function generateBillNo(){let n; do{ n = Math.floor(100000+Math.random()*900000).toString(); }while(storage.invoices.find(x=>x.billNo===n)); return n;}
 function now(){return new Date().toLocaleString();}
+function isoNow(){return new Date().toISOString();}
+function invoiceDate(inv){const d=new Date(inv.createdAtISO || inv.time); return Number.isNaN(d.getTime()) ? new Date() : d;}
+
+function readFileAsDataURL(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>resolve(reader.result);
+    reader.onerror=reject;
+    reader.readAsDataURL(file);
+  });
+}
+async function prepareBikeImage(file){
+  const originalDataUrl = await readFileAsDataURL(file);
+  return new Promise(resolve=>{
+    const img=new Image();
+    img.onload=()=>{
+      const maxWidth=900;
+      const scale=Math.min(1, maxWidth/img.width);
+      const canvas=document.createElement('canvas');
+      canvas.width=Math.round(img.width*scale);
+      canvas.height=Math.round(img.height*scale);
+      const ctx=canvas.getContext('2d');
+      ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      resolve(canvas.toDataURL('image/jpeg',0.72));
+    };
+    img.onerror=()=>resolve(originalDataUrl);
+    img.src=originalDataUrl;
+  });
+}
 
 function addRow(service='',qty=1,price=0){
   const tr=document.createElement('tr');
-  tr.innerHTML=`<td><input value="${escapeHtml(service)}" placeholder="Service name or SKU"/></td><td><input type="number" min="1" value="${escapeHtml(qty)}"/></td><td><input type="number" min="0" value="${price===0?'':escapeHtml(price)}" placeholder="Enter price"/></td><td class="lt">0</td>`;
+  tr.innerHTML=`<td><input value="${service}" placeholder="Service name or SKU"/></td><td><input type="number" min="1" value="${qty}"/></td><td><input type="number" min="0" value="${price===0?'':price}" placeholder="Enter price"/></td><td class="lt">0</td>`;
   el('currentBillTable').querySelector('tbody').appendChild(tr);
   const serviceInput=tr.children[0].querySelector('input');
   const priceInput=tr.children[2].querySelector('input');
-  serviceInput.onblur=()=>{const sku=serviceInput.value.trim(); const item=storage.inventory.find(i=>i.sku===sku); if(item){serviceInput.value=item.name; priceInput.value=item.price; updateTotals();}};
-  [...tr.querySelectorAll('input')].forEach(i=>{i.onfocus=()=>{if(i.value==='0') i.value='';}; i.oninput=updateTotals;});
+  serviceInput.onblur=()=>{
+    const sku=serviceInput.value.trim();
+    const item=storage.inventory.find(i=>i.sku===sku);
+    if(item){serviceInput.value=item.name; priceInput.value=item.price; updateTotals();}
+  };
+  [...tr.querySelectorAll('input')].forEach(i=>{
+    i.onfocus=()=>{if(i.value==='0') i.value='';};
+    i.oninput=updateTotals;
+  });
   updateTotals();
 }
 function updateTotals(){
-  let total=0; el('currentBillTable').querySelectorAll('tbody tr').forEach(tr=>{
+  let total=0;
+  el('currentBillTable').querySelectorAll('tbody tr').forEach(tr=>{
     const qty=Number(tr.children[1].querySelector('input').value||0), price=Number(tr.children[2].querySelector('input').value||0), line=qty*price;
-    tr.querySelector('.lt').innerText=line; total+=line;
-  }); el('billTotalText').innerText=`Total: PKR ${total}`;
+    tr.querySelector('.lt').innerText=line;
+    total+=line;
+  });
+  el('billTotalText').innerText=`Total: PKR ${total}`;
 }
 function renderHistory(phone){
-  const rows=sortInvoices(storage.invoices.filter(i=>invoiceMatchesClient(i, phone)));
+  const rows=storage.invoices.filter(i=>i.phone===phone);
   const body=el('historyTable').querySelector('tbody');
   body.innerHTML='';
-  if(!rows.length){
-    body.innerHTML='<tr><td colspan="6" class="muted">No service history found for this client yet.</td></tr>';
-    return;
-  }
   rows.forEach(i=>{
-    const services = servicesSummary(i.items || []);
+    const services = i.items.map(it=>`${it.service} (x${it.qty})`).join(', ');
     const tr=document.createElement('tr');
     tr.style.cursor='pointer';
-    tr.innerHTML=`<td>${escapeHtml(i.time || '')}</td><td>${escapeHtml(i.billNo || '')}</td><td>${escapeHtml(services)}</td><td>-</td><td>-</td><td>${escapeHtml(i.total || 0)}</td>`;
+    tr.innerHTML=`<td>${i.time}</td><td>${i.billNo}</td><td>${services}</td><td>-</td><td>-</td><td>${i.total}</td>`;
     tr.onclick=()=>showInvoice(i);
     body.appendChild(tr);
   });
@@ -711,10 +624,11 @@ function renderHistory(phone){
 el('searchBtn').onclick=()=>{
   const phone=el('searchPhone').value.trim(), bill=el('searchBill').value.trim(), name=el('searchName').value.trim().toLowerCase();
   el('invoicePreview').classList.add('hidden');
-  el('dashboardInvoicePreview').classList.add('hidden');
   if(bill){
-    const inv=storage.invoices.find(x=>x.billNo===bill); if(!inv) return alert('Bill not found');
-    showInvoice(inv); return;
+    const inv=storage.invoices.find(x=>x.billNo===bill);
+    if(!inv) return alert('Bill not found');
+    showInvoice(inv);
+    return;
   }
   if(!phone && !name) return alert('Enter phone, name or bill number.');
   let selectedPhone=phone;
@@ -725,103 +639,99 @@ el('searchBtn').onclick=()=>{
   if(!selectedPhone) return alert('Enter phone, name or bill number.');
   if(selectedPhone.length!==11) return alert('Phone number must be exactly 11 digits.');
   const client=storage.clients[selectedPhone];
-  el('currentBillTable').querySelector('tbody').innerHTML=''; addRow(); addRow(); addRow(); el('billingWrap').classList.remove('hidden');
+  el('currentBillTable').querySelector('tbody').innerHTML='';
+  addRow(); addRow(); addRow();
+  el('billingWrap').classList.remove('hidden');
   if(client){
-    el('clientFormWrap').classList.remove('hidden'); el('clientHistoryWrap').classList.remove('hidden');
-    el('clientPhone').value=selectedPhone; el('clientName').value=client.name; el('clientBike').value=client.bike; el('clientAddress').value=client.address;
+    el('clientFormWrap').classList.remove('hidden');
+    el('clientHistoryWrap').classList.remove('hidden');
+    el('clientPhone').value=selectedPhone;
+    el('clientName').value=client.name;
+    el('clientBike').value=client.bike;
+    el('clientAddress').value=client.address;
     ['clientPhone','clientName','clientBike','clientAddress'].forEach(id=>el(id).disabled=true);
     el('editClientBtn').textContent='Edit';
     renderHistory(selectedPhone);
   } else {
     el('clientHistoryWrap').classList.add('hidden');
-    askClientType().then(option=>{
-      if(option==='new'){el('clientFormWrap').classList.remove('hidden');el('clientPhone').value=selectedPhone;el('clientName').value='';el('clientBike').value='';el('clientAddress').value='';['clientPhone','clientName','clientBike','clientAddress'].forEach(id=>el(id).disabled=false);el('editClientBtn').textContent='Editing...';}
-      else {el('clientFormWrap').classList.add('hidden');}
-    });
+    el('clientFormWrap').classList.remove('hidden');
+    el('clientPhone').value=selectedPhone;
+    el('clientName').value='';
+    el('clientBike').value='';
+    el('clientAddress').value='';
+    ['clientPhone','clientName','clientBike','clientAddress'].forEach(id=>el(id).disabled=false);
+    el('editClientBtn').textContent='Editing...';
+    showNewClientNotice(selectedPhone);
   }
 };
 el('addServiceRow').onclick=()=>addRow();
 
 function showInvoice(inv){
-  const div=!el('dashboardPage').classList.contains('hidden') ? el('dashboardInvoicePreview') : el('invoicePreview');
-  div.innerHTML=`<h4>Invoice #${escapeHtml(inv.billNo || '')}</h4><p><b>Time:</b> ${escapeHtml(inv.time || '')}</p><p><b>Client:</b> ${escapeHtml(inv.name||'Walk-in')} | <b>Phone:</b> ${escapeHtml(inv.phone||'N/A')} | <b>Bike:</b> ${escapeHtml(inv.bike||'N/A')}</p>
+  const div=el('invoicePreview');
+  div.innerHTML=`<h4>Invoice #${inv.billNo}</h4><p><b>Time:</b> ${inv.time}</p><p><b>Client:</b> ${inv.name||'Customer'} | <b>Phone:</b> ${inv.phone||'N/A'} | <b>Bike:</b> ${inv.bike||'N/A'}</p>
   <table><thead><tr><th>Service</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>
-  ${(inv.items || []).map(i=>`<tr><td>${escapeHtml(i.service || '')}</td><td>${escapeHtml(i.qty || 0)}</td><td>${escapeHtml(i.price || 0)}</td><td>${escapeHtml((i.qty || 0)*(i.price || 0))}</td></tr>`).join('')}
-  </tbody></table><h3>Total: PKR ${escapeHtml(inv.total || 0)}</h3>
-  <div class='action-row'><button class='btn' onclick='window.print()'>Print</button><button class='btn secondary' onclick='downloadInvoice("${escapeHtml(inv.billNo || '')}")'>Download</button></div>`;
+  ${inv.items.map(i=>`<tr><td>${i.service}</td><td>${i.qty}</td><td>${i.price}</td><td>${i.qty*i.price}</td></tr>`).join('')}
+  </tbody></table><h3>Total: PKR ${inv.total}</h3>
+  <div class='action-row'><button class='btn' onclick='window.print()'>Print</button><button class='btn secondary' onclick='downloadInvoice("${inv.billNo}")'>Download</button></div>`;
   div.classList.remove('hidden');
 }
 window.downloadInvoice=(billNo)=>{
-  const inv=storage.invoices.find(x=>x.billNo===billNo); if(!inv) return;
-  const text=`Invoice #${inv.billNo}\nTime: ${inv.time}\nClient: ${inv.name||'Walk-in'}\nPhone: ${inv.phone||'N/A'}\nBike: ${inv.bike||'N/A'}\n\n`+
-  (inv.items || []).map(i=>`${i.service} | Qty ${i.qty} | Price ${i.price} | Total ${i.qty*i.price}`).join('\n')+`\n\nGrand Total: ${inv.total}`;
-  const blob=new Blob([text],{type:'text/plain'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`invoice-${billNo}.txt`; a.click();
-}
+  const inv=storage.invoices.find(x=>x.billNo===billNo);
+  if(!inv) return;
+  const text=`Invoice #${inv.billNo}\nTime: ${inv.time}\nClient: ${inv.name||'Customer'}\nPhone: ${inv.phone||'N/A'}\nBike: ${inv.bike||'N/A'}\n\n`+
+  inv.items.map(i=>`${i.service} | Qty ${i.qty} | Price ${i.price} | Total ${i.qty*i.price}`).join('\n')+`\n\nGrand Total: ${inv.total}`;
+  const blob=new Blob([text],{type:'text/plain'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`invoice-${billNo}.txt`;
+  a.click();
+};
 
 el('saveInvoiceBtn').onclick=async ()=>{
   const items=[...el('currentBillTable').querySelectorAll('tbody tr')].map(tr=>({
-    service:tr.children[0].querySelector('input').value.trim(), qty:Number(tr.children[1].querySelector('input').value||1), price:Number(tr.children[2].querySelector('input').value||0)
+    service:tr.children[0].querySelector('input').value.trim(),
+    qty:Number(tr.children[1].querySelector('input').value||1),
+    price:Number(tr.children[2].querySelector('input').value||0)
   })).filter(x=>x.service);
   if(!items.length) return alert('Add at least one service');
-  const phone=el('clientFormWrap').classList.contains('hidden')?el('searchPhone').value.trim():el('clientPhone').value.trim();
+  const phone=el('clientPhone').value.trim() || el('searchPhone').value.trim();
   const name=el('clientName').value.trim(), bike=el('clientBike').value.trim(), address=el('clientAddress').value.trim();
-  if(!el('clientFormWrap').classList.contains('hidden') && phone){storage.clients[phone]={name,bike,address}; await saveClient(phone,{name,bike,address});}
+  if(!phone || phone.length!==11 || !name) return alert('Walk-in billing has been removed. Please add an 11-digit phone number and client name before saving.');
+  storage.clients[phone]={name,bike,address};
+  await saveClient(phone,{name,bike,address});
   const total=items.reduce((s,i)=>s+i.qty*i.price,0);
-  const inv={billNo:generateBillNo(),time:now(),phone:phone||'',name,bike,address,items,total};
-  await saveInvoice(inv); showInvoice(inv); alert(`Invoice saved. Bill # ${inv.billNo}`);
+  const inv={billNo:generateBillNo(),time:now(),createdAtISO:isoNow(),phone,name,bike,address,items,total};
+  storage.invoices.push(inv);
+  await saveInvoice(inv);
+  showInvoice(inv);
+  alert(`Invoice saved. Bill # ${inv.billNo}`);
+  renderHistory(phone);
+  el('clientHistoryWrap').classList.remove('hidden');
   renderDashboard();
-  if(phone && storage.clients[phone]){ renderHistory(phone); el('clientHistoryWrap').classList.remove('hidden'); }
 };
 
-
-function notificationSummary(n){
-  const payload = n.payload || {};
-  if(n.type==='appointment') return `${payload.name || 'Unknown'} (${payload.phone || 'No phone'})`;
-  return String(payload.text || '').slice(0,50) || 'Feedback';
-}
-function notificationRow(n){
-  const tr=document.createElement('tr');
-  const detailsBtn=document.createElement('button');
-  const readBtn=document.createElement('button');
-  tr.innerHTML=`<td>${escapeHtml(n.type)}</td><td>${escapeHtml(n.time)}</td><td>${escapeHtml(notificationSummary(n))}</td><td>${n.read?'Read':'Unread'}</td><td></td>`;
-  detailsBtn.className='btn secondary';
-  detailsBtn.textContent='Full View Details';
-  detailsBtn.onclick=()=>openNotification(n.id);
-  readBtn.className='btn';
-  readBtn.textContent=n.read?'Mark as Unread':'Mark as Read';
-  readBtn.onclick=()=>toggleRead(n.id);
-  tr.lastElementChild.append(detailsBtn, ' ', readBtn);
-  return tr;
-}
-function renderNotificationSection(tableId, notifications, emptyText){
-  const table=el(tableId);
-  if(!table) return;
-  const body=table.querySelector('tbody');
-  body.innerHTML='';
-  if(!notifications.length){
-    body.innerHTML=`<tr><td colspan="5" class="muted">${escapeHtml(emptyText)}</td></tr>`;
-    return;
-  }
-  notifications.forEach(n=>body.appendChild(notificationRow(n)));
-}
 function renderNotifications(){
-  storage.notifications = sortNewest(storage.notifications);
-  renderNotificationSection('newNotifyTable', storage.notifications.filter(n=>!n.read), 'No new notifications.');
-  renderNotificationSection('olderNotifyTable', storage.notifications.filter(n=>n.read), 'No older notifications yet. Mark a notification as read to move it here.');
-  renderAppointmentHistory();
-  renderFeedbackHistory();
+  const body=el('notifyTable').querySelector('tbody');
+  body.innerHTML='';
+  storage.notifications.forEach((n,idx)=>{
+    const tr=document.createElement('tr');
+    const summary=n.type==='appointment' ? `${n.payload.name} (${n.payload.phone})` : n.payload.text.slice(0,50);
+    tr.innerHTML=`<td>${n.type}</td><td>${n.time}</td><td>${summary}</td><td>${n.read?'Read':'Unread'}</td><td><button class="btn secondary" data-i="${idx}">Full View Details</button> <button class="btn" data-r="${idx}">${n.read?'Mark as Unread':'Mark as Read'}</button></td>`;
+    tr.querySelector('[data-i]').onclick=()=>openNotification(idx);
+    tr.querySelector('[data-r]').onclick=()=>toggleRead(idx);
+    body.appendChild(tr);
+  });
 }
-async function toggleRead(notificationId){
-  const notification = storage.notifications.find(n=>n.id===notificationId);
-  if(!notification) return;
-  notification.read = !notification.read;
-  await syncNotification(notification);
+function toggleRead(idx){
+  if(!storage.notifications[idx]) return;
+  storage.notifications[idx].read = !storage.notifications[idx].read;
+  persistExtra();
   renderNotifications();
 }
 function renderDashboard(){
-  const totalServices=storage.invoices.reduce((s,inv)=>s+(inv.items || []).length,0);
+  const totalServices=storage.invoices.reduce((s,inv)=>s+inv.items.length,0);
   const totalIncome=storage.invoices.reduce((s,inv)=>s+Number(inv.total||0),0);
-  const totalItemsUsed=storage.invoices.reduce((s,inv)=>s+(inv.items || []).reduce((a,i)=>a+Number(i.qty||0),0),0);
+  const totalItemsUsed=storage.invoices.reduce((s,inv)=>s+inv.items.reduce((a,i)=>a+Number(i.qty||0),0),0);
   el('totalServicesCard').innerText=`Total Services: ${totalServices}`;
   el('totalIncomeCard').innerText=`Total Income: PKR ${totalIncome}`;
   el('totalItemsUsedCard').innerText=`Total Items Used: ${totalItemsUsed}`;
@@ -830,71 +740,160 @@ function renderDashboard(){
 function renderDashboardTable(mode){
   const body=el('dashboardHistoryTable').querySelector('tbody');
   body.innerHTML='';
-  el('dashboardInvoicePreview').classList.add('hidden');
+  const todayStr = new Date().toDateString();
   const dateFilter = el('dashboardDateFilter').value;
-  const rows = sortInvoices([...storage.invoices]).filter(inv=>{
-    if(mode==='today') return isInvoiceToday(inv);
-    if(mode==='date' && dateFilter) return invoiceDateKey(inv)===dateFilter;
-    return true;
-  });
-  if(!rows.length){
-    body.innerHTML='<tr><td colspan="4" class="muted">No service history found for this filter.</td></tr>';
-    return;
-  }
-  rows.forEach(inv=>{
-    const services=servicesSummary(inv.items || []);
-    const tr=document.createElement('tr');
-    tr.style.cursor='pointer';
-    tr.innerHTML=`<td>${escapeHtml(inv.time || '')}</td><td>${escapeHtml(inv.name||'Walk-in')}</td><td>${escapeHtml(inv.total || 0)}</td><td>${escapeHtml(services)}</td>`;
-    tr.onclick=()=>showInvoice(inv);
-    body.appendChild(tr);
-  });
+  storage.invoices
+    .filter(inv=>{
+      if(mode==='today') return invoiceDate(inv).toDateString()===todayStr;
+      if(mode==='date' && dateFilter) return invoiceDate(inv).toISOString().slice(0,10)===dateFilter;
+      return true;
+    })
+    .forEach(inv=>{
+      const services=inv.items.map(i=>`${i.service} (x${i.qty})`).join(', ');
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${inv.time}</td><td>${inv.name||'Customer'}</td><td>${inv.total}</td><td>${services}</td>`;
+      body.appendChild(tr);
+    });
 }
-function renderAppointmentHistory(){
-  const table=el('appointmentHistoryTable');
-  if(!table) return;
-  const body=table.querySelector('tbody'); body.innerHTML='';
-  sortNewest([...storage.appointments]).forEach(a=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${escapeHtml(a.createdAt || '')}</td><td>${escapeHtml(a.name || '')}</td><td>${escapeHtml(a.phone || '')}</td><td>${escapeHtml(a.bikeType || '')}</td><td>${escapeHtml(`${a.date || ''} ${a.time || ''}`.trim())}</td><td>${escapeHtml((a.services || []).join(', '))}</td><td>${escapeHtml(a.notes || '')}</td>`;
-    body.appendChild(tr);
-  });
-}
-function renderFeedbackHistory(){
-  const table=el('feedbackHistoryTable');
-  if(!table) return;
-  const body=table.querySelector('tbody'); body.innerHTML='';
-  sortNewest([...storage.feedback]).forEach(f=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${escapeHtml(f.createdAt || '')}</td><td>${escapeHtml(f.text || '')}</td>`;
-    body.appendChild(tr);
-  });
-}
-function openNotification(notificationId){
-  const n=storage.notifications.find(item=>item.id===notificationId); if(!n) return;
-  const payload = n.payload || {};
+function openNotification(idx){
+  const n=storage.notifications[idx];
+  if(!n) return;
   const panel=el('notifyDetail');
   if(n.type==='appointment'){
-    const existing=storage.clients[payload.phone];
-    panel.innerHTML=`<h4>Appointment Request</h4><p><b>Name:</b> ${escapeHtml(payload.name)}</p><p><b>Phone:</b> ${escapeHtml(payload.phone)}</p><p><b>Bike:</b> ${escapeHtml(payload.bikeType)}</p><p><b>Services:</b> ${escapeHtml((payload.services || []).join(', '))}</p><p><b>Date/Time:</b> ${escapeHtml(`${payload.date || ''} ${payload.time || ''}`.trim())}</p><p><b>Notes:</b> ${escapeHtml(payload.notes||'N/A')}</p><p><b>Client Status:</b> ${existing?'Existing':'New'}</p>${existing?`<button class="btn" id="reviewClientBtn">Review Existing Client</button>`:''}`;
-    if(existing){setTimeout(()=>{el('reviewClientBtn').onclick=()=>{el('showBilling').click();el('searchPhone').value=payload.phone;el('searchBtn').click();};},0);}
+    const existing=storage.clients[n.payload.phone];
+    panel.innerHTML=`<h4>Appointment Request</h4><p><b>Name:</b> ${n.payload.name}</p><p><b>Phone:</b> ${n.payload.phone}</p><p><b>Bike:</b> ${n.payload.bikeType}</p><p><b>Services:</b> ${n.payload.services.join(', ')}</p><p><b>Date/Time:</b> ${n.payload.date} ${n.payload.time}</p><p><b>Notes:</b> ${n.payload.notes||'N/A'}</p><p><b>Client Status:</b> ${existing?'Existing':'New'}</p>${existing?`<button class="btn" id="reviewClientBtn">Review Existing Client</button>`:''}`;
+    if(existing){
+      setTimeout(()=>{
+        el('reviewClientBtn').onclick=()=>{
+          el('showBilling').click();
+          el('searchPhone').value=n.payload.phone;
+          el('searchBtn').click();
+        };
+      },0);
+    }
   } else {
-    panel.innerHTML=`<h4>Feedback</h4><p>${escapeHtml(payload.text || '')}</p><p><b>Submitted:</b> ${escapeHtml(payload.createdAt || n.time || '')}</p>`;
+    panel.innerHTML=`<h4>Feedback</h4><p>${n.payload.text}</p><p><b>Submitted:</b> ${n.payload.createdAt}</p>`;
   }
   panel.classList.remove('hidden');
 }
 
 function renderInventory(){
-  const tbody=el('invTable').querySelector('tbody'); tbody.innerHTML='';
-  storage.inventory.forEach(i=>{const tr=document.createElement('tr'); tr.innerHTML=`<td>${escapeHtml(i.sku)}</td><td>${escapeHtml(i.name)}</td><td>${escapeHtml(i.qty)}</td><td>${escapeHtml(i.price)}</td><td>${escapeHtml(i.qty*i.price)}</td>`; tbody.appendChild(tr);});
+  const tbody=el('invTable').querySelector('tbody');
+  tbody.innerHTML='';
+  storage.inventory.forEach(i=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${i.sku}</td><td>${i.name}</td><td>${i.qty}</td><td>${i.price}</td><td>${i.qty*i.price}</td><td><button class="btn secondary" data-edit-sku="${i.sku}">Edit</button></td>`;
+    tr.querySelector('[data-edit-sku]').onclick=()=>editInventoryItem(i.sku);
+    tbody.appendChild(tr);
+  });
+}
+function editInventoryItem(sku){
+  const item=storage.inventory.find(i=>i.sku===sku);
+  if(!item) return;
+  el('invOriginalSku').value=item.sku;
+  el('invSku').value=item.sku;
+  el('invName').value=item.name;
+  el('invQty').value=item.qty;
+  el('invPrice').value=item.price;
+  el('addInvBtn').textContent='Save SKU Changes';
+}
+function clearInventoryForm(){
+  ['invOriginalSku','invName','invSku','invQty','invPrice'].forEach(id=>el(id).value='');
+  el('addInvBtn').textContent='Add / Update Item';
+}
+function renderBikeSales(){
+  const list=el('bikeSalesList');
+  if(!list) return;
+  list.innerHTML='';
+  if(!storage.bikes.length){
+    list.innerHTML='<p class="muted">No bike sale listings are available right now.</p>';
+    return;
+  }
+  storage.bikes.forEach(b=>{
+    const card=document.createElement('div');
+    card.className='card bike-card';
+    card.innerHTML=`<img src="${b.image||''}" alt="${b.name}" onerror="this.style.display='none'"><div class="bike-card-body"><span class="status-badge ${b.status==='sold'?'sold':''}">${b.status==='sold'?'Sold':'Available for Sale'}</span><h3>${b.name}</h3><p><b>Price:</b> PKR ${Number(b.price||0).toLocaleString()}</p><p class="muted">${b.details||'Contact us for details.'}</p></div>`;
+    list.appendChild(card);
+  });
+}
+function clearBikeForm(){
+  ['bikeOriginalId','bikeName','bikePrice','bikeImage','bikeDetails'].forEach(id=>el(id).value='');
+  el('bikeImageFile').value='';
+  el('bikeStatus').value='available';
+  el('saveBikeBtn').textContent='Add / Update Bike';
+}
+function renderBikeAdmin(){
+  renderBikeSales();
+  const tbody=el('bikeAdminTable').querySelector('tbody');
+  tbody.innerHTML='';
+  storage.bikes.forEach(b=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${b.image?`<img src="${b.image}" alt="${b.name}" style="width:80px;height:55px;object-fit:cover" onerror="this.style.display='none'">`:'No picture'}</td><td>${b.name}</td><td>${Number(b.price||0).toLocaleString()}</td><td>${b.status==='sold'?'Sold':'Available'}</td><td>${b.details||''}</td><td><div class="table-actions"><button class="btn secondary" data-edit-bike="${b.id}">Edit</button><button class="btn" data-remove-bike="${b.id}">Remove</button></div></td>`;
+    tr.querySelector('[data-edit-bike]').onclick=()=>editBikeListing(b.id);
+    tr.querySelector('[data-remove-bike]').onclick=async()=>{
+      if(confirm('Remove this bike listing?')){
+        await removeBikeListing(b.id);
+        renderBikeAdmin();
+      }
+    };
+    tbody.appendChild(tr);
+  });
+}
+function editBikeListing(id){
+  const b=storage.bikes.find(x=>x.id===id);
+  if(!b) return;
+  el('bikeOriginalId').value=b.id;
+  el('bikeName').value=b.name;
+  el('bikePrice').value=b.price;
+  el('bikeImage').value=b.image||'';
+  el('bikeStatus').value=b.status||'available';
+  el('bikeDetails').value=b.details||'';
+  el('saveBikeBtn').textContent='Save Bike Changes';
 }
 el('addInvBtn').onclick=async ()=>{
-  const name=el('invName').value.trim(), sku=el('invSku').value.trim(), qty=Number(el('invQty').value||0), price=Number(el('invPrice').value||0);
+  const name=el('invName').value.trim(), sku=el('invSku').value.trim(), qty=Number(el('invQty').value||0), price=Number(el('invPrice').value||0), originalSku=el('invOriginalSku').value.trim();
   if(!name || !sku) return alert('Enter name and SKU');
   const item={name,sku,qty,price};
-  await saveInventoryItem(item);
+  await saveInventoryItem(item, originalSku);
   renderInventory();
-}
+  clearInventoryForm();
+};
+el('saveBikeBtn').onclick=async()=>{
+  const id=el('bikeOriginalId').value || `bike-${Date.now()}`;
+  const existing=storage.bikes.find(b=>b.id===id);
+  const file=el('bikeImageFile').files[0];
+  const uploadedImage=file ? await prepareBikeImage(file) : '';
+  const bike={
+    id,
+    name:el('bikeName').value.trim(),
+    price:Number(el('bikePrice').value||0),
+    image:uploadedImage || el('bikeImage').value.trim() || existing?.image || '',
+    status:el('bikeStatus').value,
+    details:el('bikeDetails').value.trim(),
+    updatedAt:isoNow()
+  };
+  if(!bike.name) return alert('Enter bike name/model');
+  try{
+    await saveBikeListing(bike);
+    clearBikeForm();
+    renderBikeAdmin();
+    alert('Bike listing saved successfully.');
+  }catch(err){
+    console.error(err);
+    alert('Picture could not be saved. Please try a smaller image or paste an image URL.');
+  }
+};
+el('removeBikePictureBtn').onclick=()=>{
+  el('bikeImage').value='';
+  el('bikeImageFile').value='';
+  const id=el('bikeOriginalId').value;
+  if(id){
+    const bike=storage.bikes.find(b=>b.id===id);
+    if(bike) bike.image='';
+  }
+};
+el('clearBikeFormBtn').onclick=clearBikeForm;
+loadPublicData();
 </script>
 </body>
 </html>
