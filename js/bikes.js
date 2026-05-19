@@ -1,0 +1,3 @@
+import { db } from './firebase-config.js';import { collection,getDocs } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';import { qs, cacheGet } from './utils.js';
+const mount=qs('#bikeSalesList');
+(async()=>{let bikes=[];try{const s=await getDocs(collection(db,'bikes'));bikes=s.docs.map(d=>({id:d.id,...d.data()}));}catch{bikes=cacheGet('kh_bikes',[]);}mount.innerHTML=bikes.map(b=>`<article class='card'><h3>${b.name||''}</h3><p>PKR ${Number(b.price||0).toLocaleString()}</p><p>${b.status||'available'}</p><a class='btn' href='https://wa.me/923021046816?text=Bike%20Inquiry%20${encodeURIComponent(b.name||'')}' target='_blank'>WhatsApp Inquiry</a></article>`).join('')||'<p>No listings.</p>';})();
