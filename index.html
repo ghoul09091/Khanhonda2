@@ -1,1 +1,1061 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Khan Honda CRM | Home</title><meta name="description" content="Khan Honda premium service center."><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/public.css"></head><body><header class="site-header"><div class="container nav"><a class="brand" href="index.html">✦ ATLAS HONDA</a><nav><a href="index.html">Home</a><a href="services.html">Services</a><a href="bikes.html">Bikes</a><a href="feedback.html">Feedback</a><a class="btn" href="login.html" id="adminLoginBtn">Admin Login</a></nav></div></header><main class="container hero"><section><h1>KHAN HONDA <span>SERVICE CENTER</span></h1><p>Authorized workshop • trusted expertise.</p><a class="btn" href="booking.html" id="bookAppointmentBtn">Book Appointment</a><button id="installBtn" class="btn secondary hidden">Install App</button></section><section class="glass"><h3>Why choose us</h3><ul><li>Certified mechanics</li><li>Fast turnaround</li><li>Transparent billing</li></ul></section></main><section class="container cards" id="featuredServices"></section><footer class="container footer">Contact (WhatsApp): <a href="https://wa.me/923021046816">03021046816</a></footer><script type="module" src="js/public.js"></script><script type="module" src="js/pwa.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Khan Honda Service Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --primary-red:#d51010;
+      --primary-red-dark:#b80c0c;
+      --dark:#101521;
+      --dark-soft:#1a2338;
+      --light-bg:#f4f6fb;
+      --card:#ffffff;
+      --muted:#6e7786;
+      --border:#dce2ee;
+      --ok:#178a46;
+      --radius:16px;
+      --radius-sm:12px;
+      --shadow-sm:0 8px 22px rgba(16,21,33,.08);
+      --shadow-md:0 16px 36px rgba(16,21,33,.12);
+      --transition:180ms ease;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Montserrat,system-ui,-apple-system,sans-serif;
+      color:var(--dark);
+      background:var(--light-bg);
+      line-height:1.5;
+    }
+    .container{max-width:1180px;margin:0 auto;padding:0 16px}
+    main.container{padding:24px 16px 42px!important}
+    h1,h2,h3,h4{margin:.2rem 0;line-height:1.2}
+    .muted{color:var(--muted)}
+    .hidden{display:none!important}
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      color:#fff;
+      padding:58px 0 70px;
+      background:linear-gradient(120deg,var(--dark) 0%,var(--dark-soft) 42%,var(--primary-red) 100%);
+      box-shadow:0 18px 48px rgba(16,21,33,.24);
+    }
+    .hero::before{
+      content:"";
+      position:absolute;
+      width:380px;height:380px;
+      border-radius:999px;
+      right:-120px;top:-160px;
+      background:rgba(255,255,255,.12);
+    }
+    .hero .container{position:relative;z-index:1}
+    .hero p{max-width:740px;opacity:.95}
+    .hero.compact{padding:18px 0}
+    #heroHookLine{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);padding:8px 12px;border-radius:999px}
+
+    .btn{
+      border:0;
+      border-radius:12px;
+      padding:10px 15px;
+      min-height:42px;
+      font:700 .9rem/1 Montserrat,sans-serif;
+      background:linear-gradient(135deg,var(--primary-red),var(--primary-red-dark));
+      color:#fff;
+      cursor:pointer;
+      transition:transform var(--transition),box-shadow var(--transition),opacity var(--transition),background var(--transition);
+      box-shadow:0 10px 24px rgba(213,16,16,.24);
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .btn.secondary{background:#fff;color:var(--dark);border:1px solid var(--border);box-shadow:var(--shadow-sm)}
+    .btn.ok{background:linear-gradient(135deg,var(--ok),#0f7036)}
+
+    .public-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:-46px 0 26px;position:relative;z-index:2}
+    .public-nav .btn{width:100%;text-align:left;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:14px}
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow-sm);
+      padding:22px;
+      transition:transform var(--transition),box-shadow var(--transition);
+    }
+    .card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+    .grid{display:grid;gap:16px}
+    .grid.cols-2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+
+    label{display:block;font-size:.83rem;font-weight:700;margin:12px 0 6px;color:#313a4c}
+    input,select,textarea{
+      width:100%;padding:11px 12px;border:1px solid #c9d0de;border-radius:11px;background:#fff;color:var(--dark);font:500 .9rem Montserrat,sans-serif;
+      transition:border-color var(--transition),box-shadow var(--transition);
+    }
+    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary-red);box-shadow:0 0 0 4px rgba(213,16,16,.10)}
+    textarea{resize:vertical}
+
+    .checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:8px}
+    .checks label{display:flex;gap:8px;align-items:center;margin:0;padding:10px 12px;background:#f9fbff;border:1px solid var(--border);border-radius:11px;font-weight:600}
+    .checks input{width:auto;accent-color:var(--primary-red)}
+
+    .action-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .search-wrap{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .top-nav{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin:0 0 18px;padding:18px;border-radius:var(--radius);background:linear-gradient(135deg,var(--dark),#232d45);color:#fff;box-shadow:var(--shadow-md)}
+
+    .pill{display:inline-flex;align-items:center;padding:10px 13px;border-radius:999px;font-size:.86rem;font-weight:700;background:#eef2fb;color:#25324a;border:1px solid #dde6f6}
+
+    table{width:100%;border-collapse:separate;border-spacing:0;margin-top:14px;font-size:.88rem;background:#fff;border:1px solid var(--border);border-radius:13px;overflow:hidden}
+    th,td{padding:11px 10px;text-align:left;border-bottom:1px solid var(--border)}
+    th{background:#edf2fb;font-size:.76rem;letter-spacing:.05em;text-transform:uppercase}
+    tr:last-child td{border-bottom:0}
+    tbody tr{transition:background var(--transition)}
+    tbody tr:hover{background:#fff6f6}
+
+    #dashboardPage .grid.cols-2{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin:14px 0}
+    #totalServicesCard,#totalIncomeCard,#totalItemsUsedCard{min-height:84px;display:flex;align-items:flex-end}
+
+    .invoice{border:1px solid #d7deeb;padding:16px;border-radius:14px;background:#fff;box-shadow:var(--shadow-sm)}
+    .bike-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:12px}
+    .bike-card{overflow:hidden;padding:0}
+    .bike-card img{width:100%;height:190px;object-fit:cover;background:#e8edf8;display:block;transition:transform .25s ease}
+    .bike-card:hover img{transform:scale(1.03)}
+    .bike-card-body{padding:14px}
+    .status-badge{display:inline-block;padding:5px 10px;border-radius:999px;font-size:.74rem;font-weight:700;background:#e8f7ee;color:#126b38}
+    .status-badge.sold{background:#fde8e8;color:#a31616}
+    .table-actions{display:flex;gap:6px;flex-wrap:wrap}
+    .file-help{font-size:.78rem;color:var(--muted);margin-top:4px}
+
+    .footer-tools{margin:26px 0 10px}
+    .contact-bar{background:#fff;border:1px solid var(--border);padding:14px;border-radius:12px;box-shadow:var(--shadow-sm)}
+
+    .modal-backdrop{position:fixed;inset:0;background:rgba(16,21,33,.58);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px}
+    .modal-card{background:#fff;border-radius:16px;max-width:430px;width:92%;padding:18px;box-shadow:0 16px 40px rgba(0,0,0,.24)}
+    .modal-title{margin:0 0 6px;font-size:1.1rem}
+    .modal-sub{margin:0 0 12px;color:#5f6878;font-size:.9rem}
+    .modal-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px}
+
+
+    .site-header{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20}
+    .head-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px}
+    .brand{display:flex;align-items:center;gap:8px;color:var(--primary-red)}
+    .brand strong{font-size:1.6rem;letter-spacing:.04em}.brand span{font-weight:700}
+    .brand-mark{font-size:1.6rem}
+    .head-nav{display:flex;gap:26px;flex-wrap:wrap}.head-nav a{text-decoration:none;color:#222;font-weight:600;padding:6px 0}.head-nav a.active{color:var(--primary-red);border-bottom:3px solid var(--primary-red)}
+
+    .hero{background:linear-gradient(130deg,#ffffff 0%,#f8f9fc 52%,#ffeaea 100%);color:var(--dark);box-shadow:inset 0 -1px 0 rgba(16,21,33,.06);padding:38px 0 26px}
+    .hero::before{display:none}.hero-inner{display:grid;grid-template-columns:1fr 1.1fr;align-items:center;gap:10px}
+    .hero-copy h1{font-size:3.8rem;line-height:.95;letter-spacing:.01em}.hero-copy .khan{font-size:3rem;color:#2b3444}.hero-copy .service{color:var(--primary-red);font-weight:800;text-shadow:0 10px 24px rgba(213,16,16,.18)}
+    .muted-light{color:#424b5b}.hero-bike img{width:100%;max-height:500px;object-fit:contain}
+
+    .services-layout{display:grid;grid-template-columns:280px 1fr;gap:18px}.services-main .grid.cols-2{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+    .service-menu{padding:14px;background:linear-gradient(180deg,#fff,#f9fbff)}.menu-item{display:block;width:100%;text-align:left;border:1px solid #e5eaf5;background:#fff;border-radius:10px;padding:14px 10px;font-weight:700;color:#3d4554;border-left:4px solid transparent;cursor:pointer;transition:all var(--transition);margin-bottom:8px}.menu-item.active,.menu-item:hover{color:var(--primary-red);background:#fff6f6;border-left-color:var(--primary-red);box-shadow:0 8px 20px rgba(16,21,33,.08)}
+    .services-title{font-size:2rem;margin:4px 0 10px;color:#111}
+
+    @media (max-width:960px){
+      .head-inner{flex-direction:column;align-items:flex-start}
+      .hero-inner{grid-template-columns:1fr}
+      .services-layout{grid-template-columns:1fr}
+      .public-nav{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .search-wrap{grid-template-columns:1fr}
+      .top-nav{flex-direction:column}
+      .top-nav .action-row{justify-content:flex-start}
+      table{display:block;overflow-x:auto;white-space:nowrap}
+    }
+    @media (max-width:640px){
+      .hero{padding:44px 0 58px}
+      .public-nav{grid-template-columns:1fr;margin-top:-34px}
+      .card{padding:16px}
+      .action-row .btn,.top-nav .btn{width:100%}
+    }
+
+    @media print{
+      body *{visibility:hidden}
+      #invoicePreview, #invoicePreview *{visibility:visible}
+      #invoicePreview{position:absolute;left:0;top:0;width:100%;border:none;box-shadow:none}
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container head-inner">
+      <div class="brand">
+        <span class="brand-mark">✦</span>
+        <div><strong>ATLAS</strong><span> HONDA</span></div>
+      </div>
+      <nav class="head-nav">
+        <a class="active" href="#">Home</a><a href="#servicesPage">Services</a><a href="#bookPage">Book Appointment</a><a href="#bikeSalesPage">Bikes</a><a href="#publicFooterTools">Contact Us</a>
+      </nav>
+      <button class="btn" id="openAdminBtnTop">Admin Login</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <h1><span class="khan">KHAN HONDA</span><br><span class="service">SERVICE CENTER</span></h1>
+        <p style="font-weight:700;letter-spacing:.08em;color:#5e6778">AUTHORIZED WORKSHOP • TRUSTED EXPERTISE</p>
+        <p class="muted-light">From routine maintenance to major repairs — we keep your ride performing at its best.</p>
+        <div class="action-row">
+          <button class="btn" id="showBookBtnHero">Book Appointment</button>
+          <button class="btn secondary" id="openAdminBtn">Admin Login</button>
+        </div>
+        <p id="heroHookLine" style="margin-top:10px">Where Every Service Builds Trust..</p>
+        <button class="btn hidden" id="publicHomeBtn" style="margin-top:8px">Back to Public Home</button>
+      </div>
+      <div class="hero-bike">
+        <img src="https://i.imgur.com/j5Y8M7o.png" alt="Honda Bike" onerror="this.style.display='none'" style="filter:drop-shadow(0 24px 32px rgba(16,21,33,.2));">
+      </div>
+    </div>
+  </section>
+
+  <main class="container" style="padding:20px">
+    <div id="publicSection">
+      <div class="public-nav">
+        <button class="btn" id="showServicesBtn">1. Our Services</button>
+        <button class="btn secondary" id="showBookBtn">2. Book Appointment</button>
+        <button class="btn secondary" id="showBikeSalesBtn">3. Bikes for Sale</button>
+        <button class="btn secondary" id="showFeedbackBtn">4. Leave Feedback</button>
+      </div>
+
+      <section id="servicesPage" class="services-layout">
+        <aside class="service-menu card">
+          <button class="menu-item active" id="showServicesBtnSide">01 OUR SERVICES</button>
+          <button class="menu-item" id="showBookBtnSide">02 BOOK APPOINTMENT</button>
+          <button class="menu-item" id="showBikeSalesBtnSide">03 BIKES FOR SALE</button>
+          <button class="menu-item" id="showFeedbackBtnSide">04 LEAVE FEEDBACK</button>
+        </aside>
+        <div class="services-main">
+          <h3 class="services-title">OUR SERVICES</h3>
+          <div class="grid cols-2">
+        <div class="card"><h3>Engine & Tune-up</h3><p class="muted">Periodic tuning, carburetor checks, valve settings and performance optimization.</p></div>
+        <div class="card"><h3>Oil & Brake Service</h3><p class="muted">Oil change, brake shoe replacement, cable and safety inspections.</p></div>
+        <div class="card"><h3>General Inspection</h3><p class="muted">Full bike check-up including safety points, bolts tightening, and performance review.</p></div>
+        <div class="card"><h3>Battery Replacement & Service</h3><p class="muted">Battery health check, charging system test, and replacement if needed.</p></div>
+        <div class="card"><h3>Clutch & Gear Service</h3><p class="muted">Clutch plate inspection, cable adjustment, and smooth gear shifting optimization.</p></div>
+        <div class="card"><h3>Chain & Sprocket Service</h3><p class="muted">Chain cleaning, lubrication, adjustment, and sprocket inspection for smooth power delivery.</p></div>
+        <div class="card"><h3>Electrical System Check</h3><p class="muted">Battery testing, wiring inspection, lights, indicators, and ignition system diagnostics.</p></div>
+        <div class="card"><h3>Fuel System Cleaning</h3><p class="muted">Carburetor cleaning, fuel line inspection, and improved fuel efficiency.</p></div>
+        <div class="card"><h3>Suspension & Shock Service</h3><p class="muted">Front fork oil check, rear shock inspection, and ride comfort improvement.</p></div>
+      </div>
+        </div>
+      </section>
+
+      <section id="bikeSalesPage" class="card hidden">
+        <h3>Bike Sale Purchase</h3>
+        <p class="muted">Browse bikes currently listed by Khan Honda Service Center. Contact us on WhatsApp for inspection, purchase, or sale inquiries.</p>
+        <div id="bikeSalesList" class="bike-grid"></div>
+      </section>
+
+      <section id="bookPage" class="card hidden">
+        <h3>Book Appointment</h3>
+        <p class="muted">Fill in your details and our team will confirm your appointment.</p>
+        <div class="grid cols-2">
+          <div><label>Your Name</label><input id="apptName" placeholder="Enter your full name"></div>
+          <div><label>Phone Number</label><input id="apptPhone" maxlength="11" inputmode="numeric" placeholder="03XXXXXXXXX"></div>
+          <div><label>Bike Type</label><input id="apptBikeType" placeholder="e.g. CD70, CG125"></div>
+          <div><label>Date</label><input id="apptDate" type="date"></div>
+          <div><label>Time</label><input id="apptTime" type="time"></div>
+        </div>
+        <label>Services You Need</label>
+        <div class="checks">
+          <label><input type="checkbox" class="apptServiceOpt" value="Engine & Tune-up"> Engine & Tune-up</label>
+          <label><input type="checkbox" class="apptServiceOpt" value="Oil & Brake Service"> Oil & Brake Service</label>
+          <label><input type="checkbox" class="apptServiceOpt" value="General Inspection"> General Inspection</label>
+          <label><input type="checkbox" class="apptServiceOpt" value="Battery Replacement & Service"> Battery Replacement & Service</label>
+          <label><input type="checkbox" class="apptServiceOpt" value="Clutch & Gear Service"> Clutch & Gear Service</label>
+          <label><input type="checkbox" class="apptServiceOpt" value="Chain & Sprocket Service"> Chain & Sprocket Service</label>
+          <label><input type="checkbox" class="apptServiceOpt" value="Electrical System Check"> Electrical System Check</label>
+          <label><input type="checkbox" class="apptServiceOpt" value="Fuel System Cleaning"> Fuel System Cleaning</label>
+          <label><input type="checkbox" class="apptServiceOpt" value="Suspension & Shock Service"> Suspension & Shock Service</label>
+        </div>
+        <label>Additional Notes</label>
+        <textarea id="apptNotes" rows="3" placeholder="Any special request..."></textarea>
+        <div class="action-row">
+          <button class="btn ok" id="submitAppointmentBtn">Submit Appointment</button>
+        </div>
+      </section>
+
+      <section id="feedbackPage" class="card hidden">
+        <h3>Leave Feedback</h3>
+        <p class="muted">Share your service experience with Khan Honda Service Center.</p>
+        <textarea id="publicFeedbackText" rows="3" placeholder="Write your feedback..."></textarea>
+        <div class="action-row"><button class="btn" id="savePublicFeedbackBtn">Submit Feedback</button></div>
+      </section>
+    </div>
+
+    <section id="adminPanel" class="hidden" style="margin-top:24px">
+      <div class="top-nav">
+        <h2>Admin Dashboard</h2>
+        <div class="action-row">
+          <button class="btn secondary" id="showDashboard">Dashboard</button>
+          <button class="btn" id="showBilling">Client RCM & Billing</button>
+          <button class="btn secondary" id="showInventory">Inventory</button>
+          <button class="btn secondary" id="showBikeAdmin">Bike Sales</button>
+          <button class="btn secondary" id="showNotifications">Notification Center</button>
+          <button class="btn" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+
+      <div id="billingPage" class="card">
+        <h3>Client RCM & Billing</h3>
+        <div class="search-wrap">
+          <div>
+            <label>Search by Phone Number</label>
+            <input id="searchPhone" maxlength="11" inputmode="numeric" placeholder="e.g. 03001234567" />
+          </div>
+          <div>
+            <label>Search by Client Name</label>
+            <input id="searchName" placeholder="e.g. Ali Khan" />
+          </div>
+          <div>
+            <label>Search by Bill Number (6 digit)</label>
+            <input id="searchBill" maxlength="6" inputmode="numeric" placeholder="e.g. 104522" />
+          </div>
+        </div>
+        <div class="action-row"><button class="btn" id="searchBtn">Search</button></div>
+
+        <div id="clientFormWrap" class="hidden">
+          <h4>Client Info <button class="btn secondary" id="editClientBtn" style="padding:6px 10px;font-size:.8rem">Edit</button></h4>
+          <div class="grid cols-2">
+            <div><label>Phone Number</label><input id="clientPhone"></div>
+            <div><label>Name</label><input id="clientName"></div>
+            <div><label>Bike</label><input id="clientBike"></div>
+            <div><label>Address</label><input id="clientAddress"></div>
+          </div>
+        </div>
+        <div id="clientHistoryWrap" class="hidden">
+          <h4>Client Service History</h4>
+          <table id="historyTable"><thead><tr><th>Date/Time</th><th>Bill #</th><th>Services Summary</th><th>Qty</th><th>Price</th><th>Total Paid</th></tr></thead><tbody></tbody></table>
+        </div>
+
+        <div id="billingWrap" class="hidden">
+          <h4>Current Billing</h4>
+          <table id="currentBillTable"><thead><tr><th>Service</th><th>Qty</th><th>Price</th><th>Line Total</th></tr></thead><tbody></tbody></table>
+          <div class="action-row">
+            <button class="btn secondary" id="addServiceRow">Add Service Row</button>
+            <button class="btn ok" id="saveInvoiceBtn">Save Invoice</button>
+          </div>
+          <p id="billTotalText" class="pill">Total: PKR 0</p>
+        </div>
+
+        <div id="invoicePreview" class="invoice hidden"></div>
+      </div>
+
+      <div id="inventoryPage" class="card hidden">
+        <h3>Inventory System</h3>
+        <div class="grid cols-2">
+          <div><label>Item Name</label><input id="invName"></div>
+          <div><label>SKU / Code</label><input id="invSku"></div>
+          <div><label>Quantity</label><input id="invQty" type="number" min="0"></div>
+          <div><label>Unit Price (PKR)</label><input id="invPrice" type="number" min="0"></div>
+        </div>
+        <div class="action-row"><button class="btn" id="addInvBtn">Add / Update Item</button></div>
+        <input id="invOriginalSku" type="hidden">
+        <table id="invTable"><thead><tr><th>SKU</th><th>Name</th><th>Qty</th><th>Unit Price</th><th>Stock Value</th><th>Action</th></tr></thead><tbody></tbody></table>
+      </div>
+
+      <div id="bikeAdminPage" class="card hidden">
+        <h3>Bike Sale Purchase Admin</h3>
+        <p class="muted">Add, edit, remove, and publish bike sale listings shown on the public Bike Sale Purchase page.</p>
+        <input id="bikeOriginalId" type="hidden">
+        <div class="grid cols-2">
+          <div><label>Bike Name / Model</label><input id="bikeName" placeholder="e.g. Honda CG125 2023"></div>
+          <div><label>Price (PKR)</label><input id="bikePrice" type="number" min="0" placeholder="e.g. 250000"></div>
+          <div>
+            <label>Picture URL</label>
+            <input id="bikeImage" placeholder="Paste bike picture link">
+            <div class="file-help">Paste a link or upload a picture below.</div>
+          </div>
+          <div><label>Status</label><select id="bikeStatus"><option value="available">Available for Sale</option><option value="sold">Sold</option></select></div>
+          <div>
+            <label>Upload Bike Picture</label>
+            <input id="bikeImageFile" type="file" accept="image/*">
+            <div class="file-help">Uploaded pictures are saved with the listing for easy copy/paste use.</div>
+          </div>
+        </div>
+        <label>Details</label>
+        <textarea id="bikeDetails" rows="3" placeholder="Condition, registration, mileage, color, documents, etc."></textarea>
+        <div class="action-row">
+          <button class="btn" id="saveBikeBtn">Add / Update Bike</button>
+          <button class="btn secondary" id="removeBikePictureBtn">Remove Picture</button>
+          <button class="btn secondary" id="clearBikeFormBtn">Clear Form</button>
+        </div>
+        <table id="bikeAdminTable"><thead><tr><th>Picture</th><th>Bike</th><th>Price</th><th>Status</th><th>Details</th><th>Action</th></tr></thead><tbody></tbody></table>
+      </div>
+
+      <div id="notificationsPage" class="card hidden">
+        <h3>Notification Center</h3>
+        <table id="notifyTable"><thead><tr><th>Type</th><th>Date/Time</th><th>Summary</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table>
+        <div id="notifyDetail" class="invoice hidden" style="margin-top:14px"></div>
+      </div>
+
+      <div id="dashboardPage" class="card">
+        <h3>Dashboard Overview</h3>
+        <div class="grid cols-2">
+          <div class="pill" id="totalServicesCard">Total Services: 0</div>
+          <div class="pill" id="totalIncomeCard">Total Income: PKR 0</div>
+          <div class="pill" id="totalItemsUsedCard">Total Items Used: 0</div>
+        </div>
+        <div class="action-row">
+          <button class="btn secondary" id="filterAllBtn">All History</button>
+          <button class="btn secondary" id="filterTodayBtn">Today</button>
+          <input type="date" id="dashboardDateFilter" />
+          <button class="btn" id="filterDateBtn">Filter by Date</button>
+        </div>
+        <table id="dashboardHistoryTable"><thead><tr><th>Date/Time</th><th>Name</th><th>Bill Amount</th><th>Services Done</th></tr></thead><tbody></tbody></table>
+      </div>
+    </section>
+
+    <footer class="footer-tools" id="publicFooterTools">
+      <div class="contact-bar">
+        <strong>Contact Us (WhatsApp):</strong>
+        <a href="https://wa.me/923021046816" style="font-weight:700;margin-left:6px">03021046816</a>
+      </div>
+    </footer>
+  </main>
+
+<div id="modalRoot" class="hidden"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getFirestore, doc, setDoc, deleteDoc, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+const ADMIN_PASSWORD = '1122';
+const firebaseConfig = {
+  apiKey: "AIzaSyBydNn5GqM0Wm_giiJMnfndoTyQx4w_APE",
+  authDomain: "khan-honda-service-center.firebaseapp.com",
+  projectId: "khan-honda-service-center",
+  storageBucket: "khan-honda-service-center.firebasestorage.app",
+  messagingSenderId: "68876808026",
+  appId: "1:68876808026:web:a9f3acb0eed06044918d63",
+};
+
+let db = null;
+let firebaseReady = false;
+if (firebaseConfig.apiKey !== 'YOUR_API_KEY') {
+  const app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+  firebaseReady = true;
+}
+
+const storage = { clients: {}, invoices: [], inventory: [], appointments: [], feedback: [], notifications: [], bikes: [] };
+const el=id=>document.getElementById(id);
+
+function showModal({title, subtitle='', bodyHTML='', actions=[]}){
+  const root=el('modalRoot');
+  root.classList.remove('hidden');
+  root.innerHTML=`<div class="modal-backdrop"><div class="modal-card"><h4 class="modal-title">${title}</h4><p class="modal-sub">${subtitle}</p>${bodyHTML}<div class="modal-actions"></div></div></div>`;
+  const actionsWrap=root.querySelector('.modal-actions');
+  actions.forEach(a=>{
+    const b=document.createElement('button');
+    b.className=`btn ${a.secondary?'secondary':''}`.trim();
+    b.textContent=a.label;
+    b.onclick=()=>a.onClick();
+    actionsWrap.appendChild(b);
+  });
+}
+function closeModal(){const root=el('modalRoot');root.classList.add('hidden');root.innerHTML='';}
+function askPassword(){
+  return new Promise(resolve=>{
+    showModal({
+      title:'Admin Login',
+      subtitle:'Enter your dashboard password to continue.',
+      bodyHTML:'<label>Password</label><input id="adminPasswordInput" type="password" placeholder="Enter password" />',
+      actions:[
+        {label:'Cancel', secondary:true, onClick:()=>{closeModal();resolve(null);}},
+        {label:'Login', onClick:()=>{const v=el('adminPasswordInput').value;closeModal();resolve(v);}}
+      ]
+    });
+    setTimeout(()=>el('adminPasswordInput')?.focus(),10);
+  });
+}
+function showNewClientNotice(phone){
+  showModal({
+    title:'Client Not Found',
+    subtitle:'Walk-in billing has been removed. Please add the client details before saving the invoice.',
+    bodyHTML:`<p class="muted">A new client record will be created for <b>${phone}</b>.</p>`,
+    actions:[{label:'Add Client Details', onClick:()=>closeModal()}]
+  });
+}
+
+function toggleSearchMode(){
+  const hasPhone = el('searchPhone').value.trim().length>0;
+  const hasBill = el('searchBill').value.trim().length>0;
+  el('searchBill').disabled = hasPhone;
+  el('searchPhone').disabled = hasBill;
+}
+el('searchPhone').addEventListener('input',()=>{
+  el('searchPhone').value = el('searchPhone').value.replace(/\D/g,'').slice(0,11);
+  toggleSearchMode();
+});
+el('searchBill').addEventListener('input',()=>{
+  el('searchBill').value = el('searchBill').value.replace(/\D/g,'').slice(0,6);
+  toggleSearchMode();
+});
+
+function loadLocalExtras(){
+  storage.appointments = JSON.parse(localStorage.getItem('kh_appointments') || '[]');
+  storage.feedback = JSON.parse(localStorage.getItem('kh_feedback') || '[]');
+  storage.notifications = JSON.parse(localStorage.getItem('kh_notifications') || '[]');
+  storage.bikes = JSON.parse(localStorage.getItem('kh_bikes') || '[]');
+}
+async function loadPublicData(){
+  loadLocalExtras();
+  if(firebaseReady){
+    try{
+      const bikesSnap = await getDocs(collection(db, 'bikes'));
+      storage.bikes = bikesSnap.docs.map(d=>({id:d.id, ...d.data()}));
+    }catch(err){
+      console.warn('Firebase bike load failed; using local bike listings:', err);
+    }
+  }
+  renderBikeSales();
+}
+async function loadData(){
+  loadLocalExtras();
+  storage.clients = JSON.parse(localStorage.getItem('kh_clients') || '{}');
+  storage.invoices = JSON.parse(localStorage.getItem('kh_invoices') || '[]');
+  storage.inventory = JSON.parse(localStorage.getItem('kh_inventory') || '[]');
+  if(!firebaseReady) return;
+  try{
+    const clientsSnap = await getDocs(collection(db, 'clients'));
+    storage.clients = {};
+    clientsSnap.forEach(d=>storage.clients[d.id]=d.data());
+
+    const invoicesSnap = await getDocs(collection(db, 'invoices'));
+    storage.invoices = invoicesSnap.docs.map(d=>d.data());
+
+    const invSnap = await getDocs(collection(db, 'inventory'));
+    storage.inventory = invSnap.docs.map(d=>d.data());
+
+    const bikesSnap = await getDocs(collection(db, 'bikes'));
+    storage.bikes = bikesSnap.docs.map(d=>({id:d.id, ...d.data()}));
+  }catch(err){
+    console.warn('Firebase data load failed; using local saved data:', err);
+  }
+}
+
+async function saveClient(phone, data){
+  storage.clients[phone]=data;
+  localStorage.setItem('kh_clients', JSON.stringify(storage.clients));
+  if(firebaseReady){
+    try{ await setDoc(doc(db,'clients',phone), data); }catch(err){ console.warn('Firebase client save failed:', err); }
+  }
+}
+async function saveInvoice(inv){
+  localStorage.setItem('kh_invoices', JSON.stringify(storage.invoices));
+  if(firebaseReady){
+    try{ await addDoc(collection(db,'invoices'), inv); }catch(err){ console.warn('Firebase invoice save failed:', err); }
+  }
+}
+function persistExtra(){
+  localStorage.setItem('kh_appointments', JSON.stringify(storage.appointments));
+  localStorage.setItem('kh_feedback', JSON.stringify(storage.feedback));
+  localStorage.setItem('kh_notifications', JSON.stringify(storage.notifications));
+  localStorage.setItem('kh_bikes', JSON.stringify(storage.bikes));
+}
+
+function addNotification(type, payload){
+  storage.notifications.unshift({id:Date.now().toString(), type, time:now(), payload, read:false});
+  persistExtra();
+}
+
+async function saveInventoryItem(item, originalSku=''){
+  if(originalSku && originalSku !== item.sku){
+    storage.inventory = storage.inventory.filter(i=>i.sku !== originalSku);
+    if(firebaseReady){
+      try{ await deleteDoc(doc(db,'inventory',originalSku)); }catch(err){ console.warn('Firebase old SKU delete failed:', err); }
+    }
+  }
+  const ex=storage.inventory.find(i=>i.sku===item.sku);
+  if(ex){Object.assign(ex,item);} else storage.inventory.push(item);
+  localStorage.setItem('kh_inventory', JSON.stringify(storage.inventory));
+  if(firebaseReady){
+    try{ await setDoc(doc(db,'inventory',item.sku), item); }catch(err){ console.warn('Firebase inventory save failed:', err); }
+  }
+}
+async function saveBikeListing(bike){
+  const ex=storage.bikes.find(b=>b.id===bike.id);
+  if(ex){Object.assign(ex,bike);} else storage.bikes.unshift(bike);
+  persistExtra();
+  if(firebaseReady){
+    try{
+      await setDoc(doc(db,'bikes',bike.id), bike);
+    }catch(err){
+      console.warn('Bike saved locally, but Firebase bike save failed:', err);
+      alert('Bike saved on this device. Firebase did not accept the picture/details, so it may not appear on other devices until Firebase rules/storage are fixed.');
+    }
+  }
+}
+async function removeBikeListing(id){
+  storage.bikes = storage.bikes.filter(b=>b.id!==id);
+  persistExtra();
+  if(firebaseReady){
+    try{ await deleteDoc(doc(db,'bikes',id)); }catch(err){ console.warn('Firebase bike delete failed:', err); }
+  }
+}
+
+el('openAdminBtn').onclick=async ()=>{
+  const pass = await askPassword();
+  if(pass===null) return;
+  if(pass===ADMIN_PASSWORD){
+    await loadData();
+    el('publicSection').classList.add('hidden');
+    el('adminPanel').classList.remove('hidden');
+    el('publicFooterTools').classList.add('hidden');
+    document.querySelector('.hero').classList.add('hidden');
+    ['billingPage','inventoryPage','notificationsPage','bikeAdminPage'].forEach(id=>el(id).classList.add('hidden'));
+    el('dashboardPage').classList.remove('hidden');
+    window.scrollTo({top:0,behavior:'smooth'});
+    renderNotifications();
+    renderDashboard();
+    renderBikeSales();
+  } else alert('Wrong password');
+};
+el('publicHomeBtn').onclick=()=>{el('logoutBtn').click(); window.scrollTo({top:0,behavior:'smooth'});};
+
+function showPublicPage(pageId){
+  ['servicesPage','bookPage','bikeSalesPage','feedbackPage'].forEach(id=>el(id).classList.toggle('hidden', id!==pageId));
+  if(pageId==='bikeSalesPage') renderBikeSales();
+}
+el('showServicesBtn').onclick=()=>showPublicPage('servicesPage');
+el('showBookBtn').onclick=()=>showPublicPage('bookPage');
+el('showBikeSalesBtn').onclick=()=>showPublicPage('bikeSalesPage');
+el('showFeedbackBtn').onclick=()=>showPublicPage('feedbackPage');
+
+el('submitAppointmentBtn').onclick=()=>{
+  const name=el('apptName').value.trim(), phone=el('apptPhone').value.trim(), bikeType=el('apptBikeType').value.trim();
+  const date=el('apptDate').value, time=el('apptTime').value;
+  const services=[...document.querySelectorAll('.apptServiceOpt:checked')].map(x=>x.value);
+  el('apptPhone').value = phone.replace(/\D/g,'').slice(0,11);
+  if(!name || !phone || !bikeType || !services.length || !date || !time) return alert('Please fill all required fields.');
+  const appointment={name,phone,bikeType,services,date,time,notes:el('apptNotes').value.trim(),createdAt:now()};
+  storage.appointments.push(appointment);
+  persistExtra();
+  addNotification('appointment', appointment);
+  alert(`Appointment request submitted for ${name} on ${date} at ${time}.\nServices: ${services.join(', ')}`);
+  ['apptName','apptPhone','apptBikeType','apptDate','apptTime','apptNotes'].forEach(id=>el(id).value='');
+  document.querySelectorAll('.apptServiceOpt').forEach(x=>x.checked=false);
+};
+el('savePublicFeedbackBtn').onclick=()=>{
+  const text=el('publicFeedbackText').value.trim();
+  if(!text) return alert('Please write feedback first.');
+  const feedback={text, createdAt:now()};
+  storage.feedback.push(feedback);
+  el('publicFeedbackText').value='';
+  persistExtra();
+  addNotification('feedback', feedback);
+  alert('Feedback submitted.');
+};
+el('logoutBtn').onclick=()=>{
+  el('adminPanel').classList.add('hidden');
+  el('publicSection').classList.remove('hidden');
+  el('publicFooterTools').classList.remove('hidden');
+  document.querySelector('.hero').classList.remove('hidden');
+};
+el('showInventory').onclick=()=>{
+  el('inventoryPage').classList.remove('hidden');
+  el('billingPage').classList.add('hidden');
+  el('notificationsPage').classList.add('hidden');
+  el('dashboardPage').classList.add('hidden');
+  el('bikeAdminPage').classList.add('hidden');
+  renderInventory();
+};
+el('showBilling').onclick=()=>{
+  el('billingPage').classList.remove('hidden');
+  el('inventoryPage').classList.add('hidden');
+  el('notificationsPage').classList.add('hidden');
+  el('dashboardPage').classList.add('hidden');
+  el('bikeAdminPage').classList.add('hidden');
+};
+el('showNotifications').onclick=()=>{
+  el('notificationsPage').classList.remove('hidden');
+  el('billingPage').classList.add('hidden');
+  el('inventoryPage').classList.add('hidden');
+  el('dashboardPage').classList.add('hidden');
+  el('bikeAdminPage').classList.add('hidden');
+  renderNotifications();
+};
+el('showDashboard').onclick=()=>{
+  el('dashboardPage').classList.remove('hidden');
+  el('billingPage').classList.add('hidden');
+  el('inventoryPage').classList.add('hidden');
+  el('notificationsPage').classList.add('hidden');
+  el('bikeAdminPage').classList.add('hidden');
+  renderDashboard();
+};
+el('showBikeAdmin').onclick=()=>{
+  el('bikeAdminPage').classList.remove('hidden');
+  el('billingPage').classList.add('hidden');
+  el('inventoryPage').classList.add('hidden');
+  el('notificationsPage').classList.add('hidden');
+  el('dashboardPage').classList.add('hidden');
+  renderBikeAdmin();
+};
+el('filterAllBtn').onclick=()=>renderDashboardTable('all');
+el('filterTodayBtn').onclick=()=>renderDashboardTable('today');
+el('filterDateBtn').onclick=()=>renderDashboardTable('date');
+el('editClientBtn').onclick=()=>{
+  ['clientPhone','clientName','clientBike','clientAddress'].forEach(id=>el(id).disabled=false);
+  el('editClientBtn').textContent='Editing...';
+};
+
+function generateBillNo(){let n; do{ n = Math.floor(100000+Math.random()*900000).toString(); }while(storage.invoices.find(x=>x.billNo===n)); return n;}
+function now(){return new Date().toLocaleString();}
+function isoNow(){return new Date().toISOString();}
+function invoiceDate(inv){const d=new Date(inv.createdAtISO || inv.time); return Number.isNaN(d.getTime()) ? new Date() : d;}
+
+function readFileAsDataURL(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>resolve(reader.result);
+    reader.onerror=reject;
+    reader.readAsDataURL(file);
+  });
+}
+async function prepareBikeImage(file){
+  const originalDataUrl = await readFileAsDataURL(file);
+  return new Promise(resolve=>{
+    const img=new Image();
+    img.onload=()=>{
+      const maxWidth=900;
+      const scale=Math.min(1, maxWidth/img.width);
+      const canvas=document.createElement('canvas');
+      canvas.width=Math.round(img.width*scale);
+      canvas.height=Math.round(img.height*scale);
+      const ctx=canvas.getContext('2d');
+      ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      resolve(canvas.toDataURL('image/jpeg',0.72));
+    };
+    img.onerror=()=>resolve(originalDataUrl);
+    img.src=originalDataUrl;
+  });
+}
+
+function addRow(service='',qty=1,price=0){
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td><input value="${service}" placeholder="Service name or SKU"/></td><td><input type="number" min="1" value="${qty}"/></td><td><input type="number" min="0" value="${price===0?'':price}" placeholder="Enter price"/></td><td class="lt">0</td>`;
+  el('currentBillTable').querySelector('tbody').appendChild(tr);
+  const serviceInput=tr.children[0].querySelector('input');
+  const priceInput=tr.children[2].querySelector('input');
+  serviceInput.onblur=()=>{
+    const sku=serviceInput.value.trim();
+    const item=storage.inventory.find(i=>i.sku===sku);
+    if(item){serviceInput.value=item.name; priceInput.value=item.price; updateTotals();}
+  };
+  [...tr.querySelectorAll('input')].forEach(i=>{
+    i.onfocus=()=>{if(i.value==='0') i.value='';};
+    i.oninput=updateTotals;
+  });
+  updateTotals();
+}
+function updateTotals(){
+  let total=0;
+  el('currentBillTable').querySelectorAll('tbody tr').forEach(tr=>{
+    const qty=Number(tr.children[1].querySelector('input').value||0), price=Number(tr.children[2].querySelector('input').value||0), line=qty*price;
+    tr.querySelector('.lt').innerText=line;
+    total+=line;
+  });
+  el('billTotalText').innerText=`Total: PKR ${total}`;
+}
+function renderHistory(phone){
+  const rows=storage.invoices.filter(i=>i.phone===phone);
+  const body=el('historyTable').querySelector('tbody');
+  body.innerHTML='';
+  rows.forEach(i=>{
+    const services = i.items.map(it=>`${it.service} (x${it.qty})`).join(', ');
+    const tr=document.createElement('tr');
+    tr.style.cursor='pointer';
+    tr.innerHTML=`<td>${i.time}</td><td>${i.billNo}</td><td>${services}</td><td>-</td><td>-</td><td>${i.total}</td>`;
+    tr.onclick=()=>showInvoice(i);
+    body.appendChild(tr);
+  });
+}
+
+el('searchBtn').onclick=()=>{
+  const phone=el('searchPhone').value.trim(), bill=el('searchBill').value.trim(), name=el('searchName').value.trim().toLowerCase();
+  el('invoicePreview').classList.add('hidden');
+  if(bill){
+    const inv=storage.invoices.find(x=>x.billNo===bill);
+    if(!inv) return alert('Bill not found');
+    showInvoice(inv);
+    return;
+  }
+  if(!phone && !name) return alert('Enter phone, name or bill number.');
+  let selectedPhone=phone;
+  if(!selectedPhone && name){
+    const match=Object.entries(storage.clients).find(([p,c])=>(c.name||'').toLowerCase().includes(name));
+    if(match) selectedPhone=match[0];
+  }
+  if(!selectedPhone) return alert('Enter phone, name or bill number.');
+  if(selectedPhone.length!==11) return alert('Phone number must be exactly 11 digits.');
+  const client=storage.clients[selectedPhone];
+  el('currentBillTable').querySelector('tbody').innerHTML='';
+  addRow(); addRow(); addRow();
+  el('billingWrap').classList.remove('hidden');
+  if(client){
+    el('clientFormWrap').classList.remove('hidden');
+    el('clientHistoryWrap').classList.remove('hidden');
+    el('clientPhone').value=selectedPhone;
+    el('clientName').value=client.name;
+    el('clientBike').value=client.bike;
+    el('clientAddress').value=client.address;
+    ['clientPhone','clientName','clientBike','clientAddress'].forEach(id=>el(id).disabled=true);
+    el('editClientBtn').textContent='Edit';
+    renderHistory(selectedPhone);
+  } else {
+    el('clientHistoryWrap').classList.add('hidden');
+    el('clientFormWrap').classList.remove('hidden');
+    el('clientPhone').value=selectedPhone;
+    el('clientName').value='';
+    el('clientBike').value='';
+    el('clientAddress').value='';
+    ['clientPhone','clientName','clientBike','clientAddress'].forEach(id=>el(id).disabled=false);
+    el('editClientBtn').textContent='Editing...';
+    showNewClientNotice(selectedPhone);
+  }
+};
+el('addServiceRow').onclick=()=>addRow();
+
+function showInvoice(inv){
+  const div=el('invoicePreview');
+  div.innerHTML=`<h4>Invoice #${inv.billNo}</h4><p><b>Time:</b> ${inv.time}</p><p><b>Client:</b> ${inv.name||'Customer'} | <b>Phone:</b> ${inv.phone||'N/A'} | <b>Bike:</b> ${inv.bike||'N/A'}</p>
+  <table><thead><tr><th>Service</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>
+  ${inv.items.map(i=>`<tr><td>${i.service}</td><td>${i.qty}</td><td>${i.price}</td><td>${i.qty*i.price}</td></tr>`).join('')}
+  </tbody></table><h3>Total: PKR ${inv.total}</h3>
+  <div class='action-row'><button class='btn' onclick='window.print()'>Print</button><button class='btn secondary' onclick='downloadInvoice("${inv.billNo}")'>Download</button></div>`;
+  div.classList.remove('hidden');
+}
+window.downloadInvoice=(billNo)=>{
+  const inv=storage.invoices.find(x=>x.billNo===billNo);
+  if(!inv) return;
+  const text=`Invoice #${inv.billNo}\nTime: ${inv.time}\nClient: ${inv.name||'Customer'}\nPhone: ${inv.phone||'N/A'}\nBike: ${inv.bike||'N/A'}\n\n`+
+  inv.items.map(i=>`${i.service} | Qty ${i.qty} | Price ${i.price} | Total ${i.qty*i.price}`).join('\n')+`\n\nGrand Total: ${inv.total}`;
+  const blob=new Blob([text],{type:'text/plain'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`invoice-${billNo}.txt`;
+  a.click();
+};
+
+el('saveInvoiceBtn').onclick=async ()=>{
+  const items=[...el('currentBillTable').querySelectorAll('tbody tr')].map(tr=>({
+    service:tr.children[0].querySelector('input').value.trim(),
+    qty:Number(tr.children[1].querySelector('input').value||1),
+    price:Number(tr.children[2].querySelector('input').value||0)
+  })).filter(x=>x.service);
+  if(!items.length) return alert('Add at least one service');
+  const phone=el('clientPhone').value.trim() || el('searchPhone').value.trim();
+  const name=el('clientName').value.trim(), bike=el('clientBike').value.trim(), address=el('clientAddress').value.trim();
+  if(!phone || phone.length!==11 || !name) return alert('Walk-in billing has been removed. Please add an 11-digit phone number and client name before saving.');
+  storage.clients[phone]={name,bike,address};
+  await saveClient(phone,{name,bike,address});
+  const total=items.reduce((s,i)=>s+i.qty*i.price,0);
+  const inv={billNo:generateBillNo(),time:now(),createdAtISO:isoNow(),phone,name,bike,address,items,total};
+  storage.invoices.push(inv);
+  await saveInvoice(inv);
+  showInvoice(inv);
+  alert(`Invoice saved. Bill # ${inv.billNo}`);
+  renderHistory(phone);
+  el('clientHistoryWrap').classList.remove('hidden');
+  renderDashboard();
+};
+
+function renderNotifications(){
+  const body=el('notifyTable').querySelector('tbody');
+  body.innerHTML='';
+  storage.notifications.forEach((n,idx)=>{
+    const tr=document.createElement('tr');
+    const summary=n.type==='appointment' ? `${n.payload.name} (${n.payload.phone})` : n.payload.text.slice(0,50);
+    tr.innerHTML=`<td>${n.type}</td><td>${n.time}</td><td>${summary}</td><td>${n.read?'Read':'Unread'}</td><td><button class="btn secondary" data-i="${idx}">Full View Details</button> <button class="btn" data-r="${idx}">${n.read?'Mark as Unread':'Mark as Read'}</button></td>`;
+    tr.querySelector('[data-i]').onclick=()=>openNotification(idx);
+    tr.querySelector('[data-r]').onclick=()=>toggleRead(idx);
+    body.appendChild(tr);
+  });
+}
+function toggleRead(idx){
+  if(!storage.notifications[idx]) return;
+  storage.notifications[idx].read = !storage.notifications[idx].read;
+  persistExtra();
+  renderNotifications();
+}
+function renderDashboard(){
+  const totalServices=storage.invoices.reduce((s,inv)=>s+inv.items.length,0);
+  const totalIncome=storage.invoices.reduce((s,inv)=>s+Number(inv.total||0),0);
+  const totalItemsUsed=storage.invoices.reduce((s,inv)=>s+inv.items.reduce((a,i)=>a+Number(i.qty||0),0),0);
+  el('totalServicesCard').innerText=`Total Services: ${totalServices}`;
+  el('totalIncomeCard').innerText=`Total Income: PKR ${totalIncome}`;
+  el('totalItemsUsedCard').innerText=`Total Items Used: ${totalItemsUsed}`;
+  renderDashboardTable('all');
+}
+function renderDashboardTable(mode){
+  const body=el('dashboardHistoryTable').querySelector('tbody');
+  body.innerHTML='';
+  const todayStr = new Date().toDateString();
+  const dateFilter = el('dashboardDateFilter').value;
+  storage.invoices
+    .filter(inv=>{
+      if(mode==='today') return invoiceDate(inv).toDateString()===todayStr;
+      if(mode==='date' && dateFilter) return invoiceDate(inv).toISOString().slice(0,10)===dateFilter;
+      return true;
+    })
+    .forEach(inv=>{
+      const services=inv.items.map(i=>`${i.service} (x${i.qty})`).join(', ');
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${inv.time}</td><td>${inv.name||'Customer'}</td><td>${inv.total}</td><td>${services}</td>`;
+      body.appendChild(tr);
+    });
+}
+function openNotification(idx){
+  const n=storage.notifications[idx];
+  if(!n) return;
+  const panel=el('notifyDetail');
+  if(n.type==='appointment'){
+    const existing=storage.clients[n.payload.phone];
+    panel.innerHTML=`<h4>Appointment Request</h4><p><b>Name:</b> ${n.payload.name}</p><p><b>Phone:</b> ${n.payload.phone}</p><p><b>Bike:</b> ${n.payload.bikeType}</p><p><b>Services:</b> ${n.payload.services.join(', ')}</p><p><b>Date/Time:</b> ${n.payload.date} ${n.payload.time}</p><p><b>Notes:</b> ${n.payload.notes||'N/A'}</p><p><b>Client Status:</b> ${existing?'Existing':'New'}</p>${existing?`<button class="btn" id="reviewClientBtn">Review Existing Client</button>`:''}`;
+    if(existing){
+      setTimeout(()=>{
+        el('reviewClientBtn').onclick=()=>{
+          el('showBilling').click();
+          el('searchPhone').value=n.payload.phone;
+          el('searchBtn').click();
+        };
+      },0);
+    }
+  } else {
+    panel.innerHTML=`<h4>Feedback</h4><p>${n.payload.text}</p><p><b>Submitted:</b> ${n.payload.createdAt}</p>`;
+  }
+  panel.classList.remove('hidden');
+}
+
+function renderInventory(){
+  const tbody=el('invTable').querySelector('tbody');
+  tbody.innerHTML='';
+  storage.inventory.forEach(i=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${i.sku}</td><td>${i.name}</td><td>${i.qty}</td><td>${i.price}</td><td>${i.qty*i.price}</td><td><button class="btn secondary" data-edit-sku="${i.sku}">Edit</button></td>`;
+    tr.querySelector('[data-edit-sku]').onclick=()=>editInventoryItem(i.sku);
+    tbody.appendChild(tr);
+  });
+}
+function editInventoryItem(sku){
+  const item=storage.inventory.find(i=>i.sku===sku);
+  if(!item) return;
+  el('invOriginalSku').value=item.sku;
+  el('invSku').value=item.sku;
+  el('invName').value=item.name;
+  el('invQty').value=item.qty;
+  el('invPrice').value=item.price;
+  el('addInvBtn').textContent='Save SKU Changes';
+}
+function clearInventoryForm(){
+  ['invOriginalSku','invName','invSku','invQty','invPrice'].forEach(id=>el(id).value='');
+  el('addInvBtn').textContent='Add / Update Item';
+}
+function renderBikeSales(){
+  const list=el('bikeSalesList');
+  if(!list) return;
+  list.innerHTML='';
+  if(!storage.bikes.length){
+    list.innerHTML='<p class="muted">No bike sale listings are available right now.</p>';
+    return;
+  }
+  storage.bikes.forEach(b=>{
+    const card=document.createElement('div');
+    card.className='card bike-card';
+    card.innerHTML=`<img src="${b.image||''}" alt="${b.name}" onerror="this.style.display='none'"><div class="bike-card-body"><span class="status-badge ${b.status==='sold'?'sold':''}">${b.status==='sold'?'Sold':'Available for Sale'}</span><h3>${b.name}</h3><p><b>Price:</b> PKR ${Number(b.price||0).toLocaleString()}</p><p class="muted">${b.details||'Contact us for details.'}</p></div>`;
+    list.appendChild(card);
+  });
+}
+function clearBikeForm(){
+  ['bikeOriginalId','bikeName','bikePrice','bikeImage','bikeDetails'].forEach(id=>el(id).value='');
+  el('bikeImageFile').value='';
+  el('bikeStatus').value='available';
+  el('saveBikeBtn').textContent='Add / Update Bike';
+}
+function renderBikeAdmin(){
+  renderBikeSales();
+  const tbody=el('bikeAdminTable').querySelector('tbody');
+  tbody.innerHTML='';
+  storage.bikes.forEach(b=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${b.image?`<img src="${b.image}" alt="${b.name}" style="width:80px;height:55px;object-fit:cover" onerror="this.style.display='none'">`:'No picture'}</td><td>${b.name}</td><td>${Number(b.price||0).toLocaleString()}</td><td>${b.status==='sold'?'Sold':'Available'}</td><td>${b.details||''}</td><td><div class="table-actions"><button class="btn secondary" data-edit-bike="${b.id}">Edit</button><button class="btn" data-remove-bike="${b.id}">Remove</button></div></td>`;
+    tr.querySelector('[data-edit-bike]').onclick=()=>editBikeListing(b.id);
+    tr.querySelector('[data-remove-bike]').onclick=async()=>{
+      if(confirm('Remove this bike listing?')){
+        await removeBikeListing(b.id);
+        renderBikeAdmin();
+      }
+    };
+    tbody.appendChild(tr);
+  });
+}
+function editBikeListing(id){
+  const b=storage.bikes.find(x=>x.id===id);
+  if(!b) return;
+  el('bikeOriginalId').value=b.id;
+  el('bikeName').value=b.name;
+  el('bikePrice').value=b.price;
+  el('bikeImage').value=b.image||'';
+  el('bikeStatus').value=b.status||'available';
+  el('bikeDetails').value=b.details||'';
+  el('saveBikeBtn').textContent='Save Bike Changes';
+}
+el('addInvBtn').onclick=async ()=>{
+  const name=el('invName').value.trim(), sku=el('invSku').value.trim(), qty=Number(el('invQty').value||0), price=Number(el('invPrice').value||0), originalSku=el('invOriginalSku').value.trim();
+  if(!name || !sku) return alert('Enter name and SKU');
+  const item={name,sku,qty,price};
+  await saveInventoryItem(item, originalSku);
+  renderInventory();
+  clearInventoryForm();
+};
+el('saveBikeBtn').onclick=async()=>{
+  const id=el('bikeOriginalId').value || `bike-${Date.now()}`;
+  const existing=storage.bikes.find(b=>b.id===id);
+  const file=el('bikeImageFile').files[0];
+  const uploadedImage=file ? await prepareBikeImage(file) : '';
+  const bike={
+    id,
+    name:el('bikeName').value.trim(),
+    price:Number(el('bikePrice').value||0),
+    image:uploadedImage || el('bikeImage').value.trim() || existing?.image || '',
+    status:el('bikeStatus').value,
+    details:el('bikeDetails').value.trim(),
+    updatedAt:isoNow()
+  };
+  if(!bike.name) return alert('Enter bike name/model');
+  try{
+    await saveBikeListing(bike);
+    clearBikeForm();
+    renderBikeAdmin();
+    alert('Bike listing saved successfully.');
+  }catch(err){
+    console.error(err);
+    alert('Picture could not be saved. Please try a smaller image or paste an image URL.');
+  }
+};
+el('removeBikePictureBtn').onclick=()=>{
+  el('bikeImage').value='';
+  el('bikeImageFile').value='';
+  const id=el('bikeOriginalId').value;
+  if(id){
+    const bike=storage.bikes.find(b=>b.id===id);
+    if(bike) bike.image='';
+  }
+};
+el('clearBikeFormBtn').onclick=clearBikeForm;
+el('openAdminBtnTop').onclick=()=>el('openAdminBtn').click();
+el('showBookBtnHero').onclick=()=>el('showBookBtn').click();
+el('showServicesBtnSide').onclick=()=>el('showServicesBtn').click();
+el('showBookBtnSide').onclick=()=>el('showBookBtn').click();
+el('showBikeSalesBtnSide').onclick=()=>el('showBikeSalesBtn').click();
+el('showFeedbackBtnSide').onclick=()=>el('showFeedbackBtn').click();
+loadPublicData();
+</script>
+</body>
+</html>
