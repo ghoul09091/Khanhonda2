@@ -185,11 +185,8 @@
     <div class="container head-inner">
       <div class="brand">
         <span class="brand-mark">✦</span>
-        <div><strong>ATLAS</strong><span> HONDA</span></div>
+        <div><strong>Khan Honda</strong><span> Service Center</span></div>
       </div>
-      <nav class="head-nav">
-        <a class="active" href="#">Home</a><a href="#servicesPage">Services</a><a href="#bookPage">Book Appointment</a><a href="#bikeSalesPage">Bikes</a><a href="#publicFooterTools">Contact Us</a>
-      </nav>
       <button class="btn" id="openAdminBtnTop">Admin Login</button>
     </div>
   </header>
@@ -197,18 +194,13 @@
   <section class="hero">
     <div class="container hero-inner">
       <div class="hero-copy">
-        <h1><span class="khan">KHAN HONDA</span><br><span class="service">SERVICE CENTER</span></h1>
         <p style="font-weight:700;letter-spacing:.08em;color:#5e6778">AUTHORIZED WORKSHOP • TRUSTED EXPERTISE</p>
         <p class="muted-light">From routine maintenance to major repairs — we keep your ride performing at its best.</p>
-        <div class="action-row">
-          <button class="btn" id="showBookBtnHero">Book Appointment</button>
-          <button class="btn secondary" id="openAdminBtn">Admin Login</button>
-        </div>
         <p id="heroHookLine" style="margin-top:10px">Where Every Service Builds Trust..</p>
         <button class="btn hidden" id="publicHomeBtn" style="margin-top:8px">Back to Public Home</button>
       </div>
       <div class="hero-bike">
-        <img src="https://i.imgur.com/j5Y8M7o.png" alt="Honda Bike" onerror="this.style.display='none'" style="filter:drop-shadow(0 24px 32px rgba(16,21,33,.2));">
+        <img src="https://images.honda.com.pk/images/Bikes/125/CG125SE-Red.png" alt="Honda Bike" onerror="this.style.display='none'" style="filter:drop-shadow(0 24px 32px rgba(16,21,33,.2));">
       </div>
     </div>
   </section>
@@ -600,7 +592,8 @@ async function removeBikeListing(id){
   }
 }
 
-el('openAdminBtn').onclick=async ()=>{
+const openAdminBtn = el('openAdminBtn') || el('openAdminBtnTop');
+if(openAdminBtn) openAdminBtn.onclick=async ()=>{
   const pass = await askPassword();
   if(pass===null) return;
   if(pass===ADMIN_PASSWORD){
@@ -619,8 +612,16 @@ el('openAdminBtn').onclick=async ()=>{
 };
 el('publicHomeBtn').onclick=()=>{el('logoutBtn').click(); window.scrollTo({top:0,behavior:'smooth'});};
 
+function setActiveServiceMenu(pageId){
+  const map={servicesPage:'showServicesBtnSide',bookPage:'showBookBtnSide',bikeSalesPage:'showBikeSalesBtnSide',feedbackPage:'showFeedbackBtnSide'};
+  Object.values(map).forEach(id=>el(id)?.classList.remove('active'));
+  const activeId=map[pageId];
+  if(activeId) el(activeId)?.classList.add('active');
+}
+
 function showPublicPage(pageId){
   ['servicesPage','bookPage','bikeSalesPage','feedbackPage'].forEach(id=>el(id).classList.toggle('hidden', id!==pageId));
+  setActiveServiceMenu(pageId);
   if(pageId==='bikeSalesPage') renderBikeSales();
 }
 el('showServicesBtn').onclick=()=>showPublicPage('servicesPage');
@@ -1049,8 +1050,6 @@ el('removeBikePictureBtn').onclick=()=>{
   }
 };
 el('clearBikeFormBtn').onclick=clearBikeForm;
-el('openAdminBtnTop').onclick=()=>el('openAdminBtn').click();
-el('showBookBtnHero').onclick=()=>el('showBookBtn').click();
 el('showServicesBtnSide').onclick=()=>el('showServicesBtn').click();
 el('showBookBtnSide').onclick=()=>el('showBookBtn').click();
 el('showBikeSalesBtnSide').onclick=()=>el('showBikeSalesBtn').click();
