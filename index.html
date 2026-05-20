@@ -76,7 +76,7 @@
     .btn.secondary{background:#fff;color:var(--dark);border:1px solid var(--border);box-shadow:var(--shadow-sm)}
     .btn.ok{background:linear-gradient(135deg,var(--ok),#0f7036)}
 
-    .public-nav{display:grid;grid-template-columns:1fr;gap:12px;margin:-46px 0 26px;position:relative;z-index:2}
+    .public-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:-46px 0 26px;position:relative;z-index:2}
     .public-nav .btn{width:100%;text-align:left;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:14px}
 
     .card{
@@ -187,7 +187,7 @@
         <span class="brand-mark">✦</span>
         <div><strong>Khan Honda</strong><span> Service Center</span></div>
       </div>
-      
+      <button class="btn" id="openAdminBtnTop">Admin Login</button>
     </div>
   </header>
 
@@ -208,7 +208,10 @@
   <main class="container" style="padding:20px">
     <div id="publicSection">
       <div class="public-nav">
-        <button class="btn" id="showServicesBtn">Our Services</button>
+        <button class="btn" id="showServicesBtn">1. Our Services</button>
+        <button class="btn secondary" id="showBookBtn">2. Book Appointment</button>
+        <button class="btn secondary" id="showBikeSalesBtn">3. Bikes for Sale</button>
+        <button class="btn secondary" id="showFeedbackBtn">4. Leave Feedback</button>
       </div>
 
       <section id="servicesPage" class="services-layout">
@@ -622,6 +625,9 @@ function showPublicPage(pageId){
   if(pageId==='bikeSalesPage') renderBikeSales();
 }
 el('showServicesBtn').onclick=()=>showPublicPage('servicesPage');
+el('showBookBtn').onclick=()=>showPublicPage('bookPage');
+el('showBikeSalesBtn').onclick=()=>showPublicPage('bikeSalesPage');
+el('showFeedbackBtn').onclick=()=>showPublicPage('feedbackPage');
 
 el('submitAppointmentBtn').onclick=()=>{
   const name=el('apptName').value.trim(), phone=el('apptPhone').value.trim(), bikeType=el('apptBikeType').value.trim();
@@ -1045,6 +1051,9 @@ el('removeBikePictureBtn').onclick=()=>{
 };
 el('clearBikeFormBtn').onclick=clearBikeForm;
 el('showServicesBtnSide').onclick=()=>el('showServicesBtn').click();
+el('showBookBtnSide').onclick=()=>el('showBookBtn').click();
+el('showBikeSalesBtnSide').onclick=()=>el('showBikeSalesBtn').click();
+el('showFeedbackBtnSide').onclick=()=>el('showFeedbackBtn').click();
 loadPublicData();
 </script>
 </body>
