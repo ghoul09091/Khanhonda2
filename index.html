@@ -275,6 +275,7 @@
   </header>
 
   <section class="hero">
+    <img class="hero-photo" src="assets/homepage-hero-service.svg" alt="Red Honda motorcycle being serviced by a mechanic in a workshop">
     <div class="container hero-inner">
       <div class="hero-copy">
         <p class="hero-eyebrow">Authorized Workshop • Trusted Expertise</p>
@@ -586,18 +587,40 @@ el('searchBill').addEventListener('input',()=>{
   toggleSearchMode();
 });
 
+function readSavedJSON(key, fallback){
+  try{return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));}
+  catch(err){console.warn(`Saved data for ${key} could not be read; using fallback.`, err); return fallback;}
+}
+function mergeRecords(localRows, remoteRows, keyFn){
+  const merged = new Map();
+  [...(localRows || []), ...(remoteRows || [])].forEach((row, idx)=>{
+    if(!row) return;
+    const key = keyFn(row) || `row-${idx}-${JSON.stringify(row)}`;
+    merged.set(key, {...(merged.get(key) || {}), ...row});
+  });
+  return [...merged.values()];
+}
+function invoiceKey(inv){return inv.billNo || `${inv.phone || ''}-${inv.createdAtISO || inv.time || ''}-${inv.total || 0}`;}
+function extraKey(item){return item.id || `${item.createdAt || item.time || ''}-${item.type || ''}-${JSON.stringify(item.payload || item).slice(0,80)}`;}
+function persistCoreData(){
+  localStorage.setItem('kh_clients', JSON.stringify(storage.clients));
+  localStorage.setItem('kh_invoices', JSON.stringify(storage.invoices));
+  localStorage.setItem('kh_inventory', JSON.stringify(storage.inventory));
+}
 function loadLocalExtras(){
-  storage.appointments = JSON.parse(localStorage.getItem('kh_appointments') || '[]');
-  storage.feedback = JSON.parse(localStorage.getItem('kh_feedback') || '[]');
-  storage.notifications = JSON.parse(localStorage.getItem('kh_notifications') || '[]');
-  storage.bikes = JSON.parse(localStorage.getItem('kh_bikes') || '[]');
+  storage.appointments = readSavedJSON('kh_appointments', []);
+  storage.feedback = readSavedJSON('kh_feedback', []);
+  storage.notifications = readSavedJSON('kh_notifications', []);
+  storage.bikes = readSavedJSON('kh_bikes', []);
 }
 async function loadPublicData(){
   loadLocalExtras();
   if(firebaseReady){
     try{
       const bikesSnap = await getDocs(collection(db, 'bikes'));
-      storage.bikes = bikesSnap.docs.map(d=>({id:d.id, ...d.data()}));
+      const remoteBikes = bikesSnap.docs.map(d=>({id:d.id, ...d.data()}));
+      storage.bikes = mergeRecords(storage.bikes, remoteBikes, b=>b.id);
+      persistExtra();
     }catch(err){
       console.warn('Firebase bike load failed; using local bike listings:', err);
     }
@@ -606,23 +629,39 @@ async function loadPublicData(){
 }
 async function loadData(){
   loadLocalExtras();
-  storage.clients = JSON.parse(localStorage.getItem('kh_clients') || '{}');
-  storage.invoices = JSON.parse(localStorage.getItem('kh_invoices') || '[]');
-  storage.inventory = JSON.parse(localStorage.getItem('kh_inventory') || '[]');
+  storage.clients = readSavedJSON('kh_clients', {});
+  storage.invoices = readSavedJSON('kh_invoices', []);
+  storage.inventory = readSavedJSON('kh_inventory', []);
   if(!firebaseReady) return;
   try{
     const clientsSnap = await getDocs(collection(db, 'clients'));
-    storage.clients = {};
-    clientsSnap.forEach(d=>storage.clients[d.id]=d.data());
+    const remoteClients = {};
+    clientsSnap.forEach(d=>remoteClients[d.id]=d.data());
+    storage.clients = {...storage.clients, ...remoteClients};
 
     const invoicesSnap = await getDocs(collection(db, 'invoices'));
-    storage.invoices = invoicesSnap.docs.map(d=>d.data());
+    const remoteInvoices = invoicesSnap.docs.map(d=>({id:d.id, ...d.data()}));
+    storage.invoices = mergeRecords(storage.invoices, remoteInvoices, invoiceKey);
 
     const invSnap = await getDocs(collection(db, 'inventory'));
-    storage.inventory = invSnap.docs.map(d=>d.data());
+    const remoteInventory = invSnap.docs.map(d=>({sku:d.id, ...d.data()}));
+    storage.inventory = mergeRecords(storage.inventory, remoteInventory, item=>item.sku);
 
     const bikesSnap = await getDocs(collection(db, 'bikes'));
-    storage.bikes = bikesSnap.docs.map(d=>({id:d.id, ...d.data()}));
+    const remoteBikes = bikesSnap.docs.map(d=>({id:d.id, ...d.data()}));
+    storage.bikes = mergeRecords(storage.bikes, remoteBikes, b=>b.id);
+
+    const appointmentsSnap = await getDocs(collection(db, 'appointments'));
+    storage.appointments = mergeRecords(storage.appointments, appointmentsSnap.docs.map(d=>({id:d.id, ...d.data()})), extraKey);
+
+    const feedbackSnap = await getDocs(collection(db, 'feedback'));
+    storage.feedback = mergeRecords(storage.feedback, feedbackSnap.docs.map(d=>({id:d.id, ...d.data()})), extraKey);
+
+    const notificationsSnap = await getDocs(collection(db, 'notifications'));
+    storage.notifications = mergeRecords(storage.notifications, notificationsSnap.docs.map(d=>({id:d.id, ...d.data()})), extraKey);
+
+    persistCoreData();
+    persistExtra();
   }catch(err){
     console.warn('Firebase data load failed; using local saved data:', err);
   }
@@ -649,8 +688,12 @@ function persistExtra(){
 }
 
 function addNotification(type, payload){
-  storage.notifications.unshift({id:Date.now().toString(), type, time:now(), payload, read:false});
+  const notification = {id:Date.now().toString(), type, time:now(), payload, read:false};
+  storage.notifications.unshift(notification);
   persistExtra();
+  if(firebaseReady){
+    addDoc(collection(db,'notifications'), notification).catch(err=>console.warn('Firebase notification save failed:', err));
+  }
 }
 
 async function saveInventoryItem(item, originalSku=''){
@@ -745,6 +788,9 @@ el('submitAppointmentBtn').onclick=()=>{
   const appointment={name,phone,bikeType,services,date,time,notes:el('apptNotes').value.trim(),createdAt:now()};
   storage.appointments.push(appointment);
   persistExtra();
+  if(firebaseReady){
+    addDoc(collection(db,'appointments'), appointment).catch(err=>console.warn('Firebase appointment save failed:', err));
+  }
   addNotification('appointment', appointment);
   alert(`Appointment request submitted for ${name} on ${date} at ${time}.\nServices: ${services.join(', ')}`);
   ['apptName','apptPhone','apptBikeType','apptDate','apptTime','apptNotes'].forEach(id=>el(id).value='');
@@ -757,6 +803,9 @@ el('savePublicFeedbackBtn').onclick=()=>{
   storage.feedback.push(feedback);
   el('publicFeedbackText').value='';
   persistExtra();
+  if(firebaseReady){
+    addDoc(collection(db,'feedback'), feedback).catch(err=>console.warn('Firebase feedback save failed:', err));
+  }
   addNotification('feedback', feedback);
   alert('Feedback submitted.');
 };
