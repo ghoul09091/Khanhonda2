@@ -627,6 +627,16 @@ async function loadPublicData(){
   }
   renderBikeSales();
 }
+async function loadRemoteDocs(name){
+  if(!firebaseReady) return [];
+  try{
+    const snap = await getDocs(collection(db, name));
+    return snap.docs.map(d=>({...d.data(), id:d.id}));
+  }catch(err){
+    console.warn(`Firebase ${name} load failed; keeping local saved data:`, err);
+    return [];
+  }
+}
 async function loadData(){
   loadLocalExtras();
   storage.clients = readSavedJSON('kh_clients', {});
@@ -815,7 +825,8 @@ el('logoutBtn').onclick=()=>{
   el('publicFooterTools').classList.remove('hidden');
   document.querySelector('.hero').classList.remove('hidden');
 };
-el('showInventory').onclick=()=>{
+el('showInventory').onclick=async()=>{
+  await loadData();
   el('inventoryPage').classList.remove('hidden');
   el('billingPage').classList.add('hidden');
   el('notificationsPage').classList.add('hidden');
@@ -830,7 +841,8 @@ el('showBilling').onclick=()=>{
   el('dashboardPage').classList.add('hidden');
   el('bikeAdminPage').classList.add('hidden');
 };
-el('showNotifications').onclick=()=>{
+el('showNotifications').onclick=async()=>{
+  await loadData();
   el('notificationsPage').classList.remove('hidden');
   el('billingPage').classList.add('hidden');
   el('inventoryPage').classList.add('hidden');
@@ -838,7 +850,8 @@ el('showNotifications').onclick=()=>{
   el('bikeAdminPage').classList.add('hidden');
   renderNotifications();
 };
-el('showDashboard').onclick=()=>{
+el('showDashboard').onclick=async()=>{
+  await loadData();
   el('dashboardPage').classList.remove('hidden');
   el('billingPage').classList.add('hidden');
   el('inventoryPage').classList.add('hidden');
@@ -846,7 +859,8 @@ el('showDashboard').onclick=()=>{
   el('bikeAdminPage').classList.add('hidden');
   renderDashboard();
 };
-el('showBikeAdmin').onclick=()=>{
+el('showBikeAdmin').onclick=async()=>{
+  await loadData();
   el('bikeAdminPage').classList.remove('hidden');
   el('billingPage').classList.add('hidden');
   el('inventoryPage').classList.add('hidden');
@@ -934,7 +948,8 @@ function renderHistory(phone){
   });
 }
 
-el('searchBtn').onclick=()=>{
+el('searchBtn').onclick=async()=>{
+  await loadData();
   const phone=el('searchPhone').value.trim(), bill=el('searchBill').value.trim(), name=el('searchName').value.trim().toLowerCase();
   el('invoicePreview').classList.add('hidden');
   if(bill){
