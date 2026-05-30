@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1508 768" role="img" aria-labelledby="title desc">
+  <title id="title">Honda motorcycle service workshop hero image</title>
+  <desc id="desc">A red sport motorcycle on a service lift with a mechanic in a dark Honda-inspired uniform inside a modern workshop.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#16191f"/>
+      <stop offset="0.52" stop-color="#24272d"/>
+      <stop offset="1" stop-color="#111318"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" x2="1">
+      <stop offset="0" stop-color="#1a1d22"/>
+      <stop offset="0.5" stop-color="#393d43"/>
+      <stop offset="1" stop-color="#111318"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="48%" cy="50%" r="55%">
+      <stop offset="0" stop-color="#d51010" stop-opacity=".45"/>
+      <stop offset=".55" stop-color="#d51010" stop-opacity=".08"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="softBlur"><feGaussianBlur stdDeviation="8"/></filter>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000" flood-opacity=".55"/></filter>
+  </defs>
+  <rect width="1508" height="768" fill="url(#bg)"/>
+  <rect y="435" width="1508" height="333" fill="url(#floor)"/>
+  <path d="M0 344h1508v52H0z" fill="#10151c"/>
+  <path d="M0 372h1508v16H0z" fill="#a30e12" opacity=".8"/>
+  <g opacity=".58">
+    <rect x="86" y="90" width="150" height="18" rx="9" fill="#f7f7f7" opacity=".85"/>
+    <rect x="414" y="76" width="168" height="18" rx="9" fill="#f7f7f7" opacity=".82"/>
+    <rect x="821" y="88" width="190" height="18" rx="9" fill="#f7f7f7" opacity=".92"/>
+    <rect x="1190" y="78" width="170" height="18" rx="9" fill="#f7f7f7" opacity=".82"/>
+  </g>
+  <g opacity=".28">
+    <rect x="42" y="415" width="146" height="54" fill="#252b34"/><rect x="220" y="412" width="168" height="58" fill="#252b34"/>
+    <rect x="1125" y="404" width="168" height="64" fill="#252b34"/><rect x="1324" y="410" width="130" height="58" fill="#252b34"/>
+    <path d="M60 470h1380" stroke="#000" stroke-width="8" opacity=".3"/>
+  </g>
+  <ellipse cx="860" cy="615" rx="590" ry="82" fill="#000" opacity=".45" filter="url(#softBlur)"/>
+  <ellipse cx="880" cy="395" rx="470" ry="270" fill="url(#glow)"/>
+  <g filter="url(#shadow)">
+    <path d="M268 670h770l54-54H326z" fill="#861015"/>
+    <path d="M312 616h782v28H286z" fill="#c31920"/>
+    <path d="M362 642h604" stroke="#421016" stroke-width="9" opacity=".65"/>
+  </g>
+  <g transform="translate(238 170)" filter="url(#shadow)">
+    <circle cx="250" cy="360" r="136" fill="#07090d"/>
+    <circle cx="250" cy="360" r="103" fill="none" stroke="#2a2e36" stroke-width="28"/>
+    <circle cx="250" cy="360" r="63" fill="#d8d8d8" opacity=".85"/>
+    <circle cx="250" cy="360" r="33" fill="#1a1d22"/>
+    <g stroke="#d51010" stroke-width="8" opacity=".9">
+      <path d="M250 236v248M126 360h248M163 273l174 174M337 273L163 447"/>
+    </g>
+    <circle cx="745" cy="366" r="106" fill="#07090d"/>
+    <circle cx="745" cy="366" r="78" fill="none" stroke="#2a2e36" stroke-width="24"/>
+    <circle cx="745" cy="366" r="42" fill="#cfd1d4"/>
+    <path d="M256 244c54-104 135-162 269-176 145-14 252 33 322 132l-60 100-238 28-220-30z" fill="#d51010"/>
+    <path d="M340 150c90-76 215-110 330-84 43 10 76 33 98 76l-122 5-183 56z" fill="#f11b23"/>
+    <path d="M445 96c47-62 118-90 202-82l50 53c-99-12-180 2-252 29z" fill="#151922"/>
+    <path d="M552 78l104 10 50 58-185 20z" fill="#e7e9ee" opacity=".92"/>
+    <path d="M302 274l254-76 220-2 88 64c-70 44-159 67-274 70l-200 56z" fill="#c70f16"/>
+    <path d="M430 218l190-34 132 9-38 42-224 35z" fill="#f7f8fb"/>
+    <path d="M484 263l268-37-40 54-202 33z" fill="#11151c"/>
+    <path d="M715 92l102 20 74 72-119-10z" fill="#e11119"/>
+    <path d="M760 112l80-48 60 20-88 70z" fill="#1b2028"/>
+    <path d="M830 174l148 24 64 58-146 30z" fill="#20242c"/>
+    <path d="M946 222l64-20 66 20-32 38z" fill="#f01a22"/>
+    <path d="M326 176l-42-56 54-20 86 54z" fill="#1f242c"/>
+    <path d="M396 142l-34-78 54-30 52 88z" fill="#2c323c"/>
+    <path d="M848 274l-116 146-236 4-76-96z" fill="#20242b"/>
+    <path d="M508 424h300" stroke="#cbd0d8" stroke-width="20" stroke-linecap="round" opacity=".7"/>
+    <path d="M324 298c44 38 98 58 162 62" stroke="#fff" stroke-width="18" opacity=".92"/>
+    <path d="M370 320c82 12 190 4 328-22" stroke="#0a0d12" stroke-width="16" opacity=".95"/>
+    <path d="M640 342l94 64" stroke="#6d7077" stroke-width="12" stroke-linecap="round"/>
+    <text x="604" y="398" fill="#d6d7da" font-family="Arial Black,Arial" font-size="32" transform="rotate(-8 604 398)">HONDA</text>
+  </g>
+  <g transform="translate(948 250)" filter="url(#shadow)">
+    <path d="M170 120c28 2 51 20 61 48 12 34-4 68-29 86-20 15-54 13-77-2-34-22-43-64-24-96 14-24 39-39 69-36z" fill="#151515"/>
+    <path d="M143 86c50-22 104 9 110 55-28 5-77 2-127-16 0-15 6-30 17-39z" fill="#1b1c20"/>
+    <path d="M120 250c73 12 139 58 171 136l28 118-90 0-42-102-110 104H-2l99-136z" fill="#15191f"/>
+    <path d="M164 262c34 12 64 35 88 69l-34 29c-24-34-54-57-89-67z" fill="#e11920"/>
+    <path d="M104 300l-42 126-54 70h68l72-90z" fill="#242831"/>
+    <path d="M254 372l112 88-42 48-104-68z" fill="#191d24"/>
+    <path d="M92 395l-118 34-14 48 136-16z" fill="#1e232b"/>
+    <path d="M-30 464l-44 62" stroke="#111" stroke-width="28" stroke-linecap="round"/>
+    <path d="M312 500l66 60" stroke="#111" stroke-width="34" stroke-linecap="round"/>
+    <path d="M200 312l56 40" stroke="#d51010" stroke-width="10" opacity=".9"/>
+    <path d="M205 340l56 40" stroke="#d51010" stroke-width="10" opacity=".9"/>
+    <path d="M208 368l56 40" stroke="#d51010" stroke-width="10" opacity=".9"/>
+    <path d="M128 292l-26 84" stroke="#d51010" stroke-width="12" opacity=".9"/>
+    <path d="M338 462c22 8 32 27 23 48l-32 4-16-35z" fill="#222831"/>
+    <path d="M-24 430c28-8 48 1 56 25l-12 30-52-7z" fill="#222831"/>
+    <path d="M240 264c36 18 69 41 96 72" stroke="#d51010" stroke-width="8" fill="none" opacity=".9"/>
+  </g>
+  <rect width="1508" height="768" fill="#000" opacity=".18"/>
+</svg>

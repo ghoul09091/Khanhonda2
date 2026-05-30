@@ -76,8 +76,65 @@
     .btn.secondary{background:#fff;color:var(--dark);border:1px solid var(--border);box-shadow:var(--shadow-sm)}
     .btn.ok{background:linear-gradient(135deg,var(--ok),#0f7036)}
 
-    .public-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:-46px 0 26px;position:relative;z-index:2}
-    .public-nav .btn{width:100%;text-align:left;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:14px}
+    .public-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin:-44px 0 34px;position:relative;z-index:2}
+    .public-nav .btn{
+      position:relative;
+      min-height:86px;
+      width:100%;
+      text-align:left;
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      gap:14px;
+      padding:18px 20px;
+      border-radius:18px;
+      overflow:hidden;
+      background:linear-gradient(145deg,#ffffff 0%,#f8faff 100%);
+      color:var(--dark);
+      border:1px solid rgba(213,16,16,.10);
+      box-shadow:0 14px 34px rgba(16,21,33,.10);
+    }
+    .public-nav .btn::after{
+      content:"";
+      position:absolute;
+      left:18px;
+      right:18px;
+      bottom:0;
+      height:4px;
+      border-radius:999px 999px 0 0;
+      background:transparent;
+      transition:background var(--transition),transform var(--transition);
+      transform:scaleX(.35);
+      transform-origin:center;
+    }
+    .public-nav .btn:hover{
+      transform:translateY(-4px);
+      border-color:rgba(213,16,16,.36);
+      box-shadow:0 20px 42px rgba(16,21,33,.14),0 10px 24px rgba(213,16,16,.10);
+    }
+    .public-nav .btn.active{
+      color:var(--primary-red);
+      border-color:rgba(213,16,16,.30);
+      background:linear-gradient(145deg,#fff8f8 0%,#ffffff 64%);
+      box-shadow:0 18px 42px rgba(213,16,16,.13),0 12px 28px rgba(16,21,33,.10);
+    }
+    .public-nav .btn.active::after{background:var(--primary-red);transform:scaleX(1)}
+    .public-nav .nav-icon{
+      flex:0 0 42px;
+      width:42px;
+      height:42px;
+      display:grid;
+      place-items:center;
+      border-radius:14px;
+      font-size:1.45rem;
+      color:var(--primary-red);
+      background:rgba(213,16,16,.08);
+      transition:transform var(--transition),background var(--transition),color var(--transition);
+    }
+    .public-nav .btn:hover .nav-icon,.public-nav .btn.active .nav-icon{transform:scale(1.06);background:var(--primary-red);color:#fff}
+    .public-nav .nav-text{display:flex;flex-direction:column;gap:2px;font-size:1rem;font-weight:800;line-height:1.2}
+    .public-nav .nav-kicker{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+    .public-nav .btn.active .nav-kicker{color:var(--primary-red-dark)}
 
     .card{
       background:var(--card);
@@ -140,37 +197,61 @@
     .modal-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px}
 
 
-    .site-header{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20}
-    .head-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px}
-    .brand{display:flex;align-items:center;gap:8px;color:var(--primary-red)}
-    .brand strong{font-size:1.6rem;letter-spacing:.04em}.brand span{font-weight:700}
-    .brand-mark{font-size:1.6rem}
+    .site-header{background:#fff;border-bottom:1px solid #eef1f6;position:sticky;top:0;z-index:20;box-shadow:0 2px 14px rgba(16,21,33,.04)}
+    .head-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:72px;padding:10px 16px}
+    .brand{display:flex;align-items:center;gap:12px;color:var(--primary-red)}
+    .brand strong{font-size:1.85rem;letter-spacing:.01em;font-weight:800}.brand span{font-weight:600;color:#111827;font-size:1rem}
+    .brand-mark{width:38px;height:30px;display:inline-block;color:var(--primary-red);font-size:0;background:currentColor;clip-path:polygon(0 70%,100% 0,87% 16%,16% 58%,86% 26%,76% 39%,20% 68%,72% 48%,62% 61%,22% 80%)}
+    #openAdminBtnTop{min-height:42px;border-radius:8px;padding:0 18px;display:inline-flex;align-items:center;gap:8px;box-shadow:0 10px 22px rgba(213,16,16,.22)}
+    #openAdminBtnTop::before{content:"👤";font-size:1rem;filter:brightness(0) invert(1)}
     .head-nav{display:flex;gap:26px;flex-wrap:wrap}.head-nav a{text-decoration:none;color:#222;font-weight:600;padding:6px 0}.head-nav a.active{color:var(--primary-red);border-bottom:3px solid var(--primary-red)}
 
-    .hero{background:linear-gradient(130deg,#ffffff 0%,#f8f9fc 52%,#ffeaea 100%);color:var(--dark);box-shadow:inset 0 -1px 0 rgba(16,21,33,.06);padding:38px 0 26px}
-    .hero::before{display:none}.hero-inner{display:grid;grid-template-columns:1fr 1.1fr;align-items:center;gap:10px}
-    .hero-copy h1{font-size:3.8rem;line-height:.95;letter-spacing:.01em}.hero-copy .khan{font-size:3rem;color:#2b3444}.hero-copy .service{color:var(--primary-red);font-weight:800;text-shadow:0 10px 24px rgba(213,16,16,.18)}
-    .muted-light{color:#424b5b}.hero-bike img{width:100%;max-height:500px;object-fit:contain}
+    .hero{
+      min-height:376px;
+      padding:0;
+      color:#fff;
+      background:#050910;
+      box-shadow:inset 0 -1px 0 rgba(255,255,255,.08),0 18px 42px rgba(16,21,33,.18);
+    }
+    .hero-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:0;filter:saturate(1.08) contrast(1.04)}
+    .hero::before{display:block;content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(1,5,12,.98) 0%,rgba(1,5,12,.90) 40%,rgba(1,5,12,.38) 66%,rgba(1,5,12,.08) 100%)}
+    .hero::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,rgba(0,0,0,.08),rgba(0,0,0,.08));pointer-events:none}
+    .hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1.02fr .98fr;align-items:center;gap:22px;min-height:376px}
+    .hero-copy{padding:34px 0 30px}.hero-copy p{margin:0}
+    .hero-eyebrow{display:flex;align-items:center;gap:8px;font-size:.76rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;margin-bottom:12px!important}.hero-eyebrow::before,.hero-eyebrow::after{content:"";width:12px;height:2px;background:var(--primary-red);display:inline-block}
+    .hero-copy h1{font-size:3.05rem;line-height:1.18;letter-spacing:-.04em;margin:0 0 12px;font-weight:800;color:#fff}.hero-copy h1 span{color:#ff2a2a}
+    .muted-light{color:rgba(255,255,255,.90);font-size:1.02rem;line-height:1.55;max-width:510px!important;margin-bottom:16px!important}
+    #heroHookLine{display:none}
+    .hero-trust{display:flex;gap:26px;flex-wrap:wrap;margin:18px 0 18px}.trust-item{display:inline-flex;align-items:center;gap:10px;font-size:.9rem;font-weight:700;color:#fff}.trust-icon{width:34px;height:34px;border:1px solid rgba(213,16,16,.55);border-radius:999px;display:grid;place-items:center;color:#ff2828;background:rgba(213,16,16,.10);box-shadow:0 8px 18px rgba(0,0,0,.22)}
+    .hero-actions{display:flex;gap:16px;flex-wrap:wrap}.hero-actions .btn{min-width:222px;min-height:52px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;gap:12px;font-size:.92rem}.hero-actions .btn.secondary{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.72);color:#fff;box-shadow:none}.hero-actions .btn.secondary:hover{background:rgba(255,255,255,.12)}
+    .hero-bike{align-self:stretch;min-height:376px}
+    .hero-bike img{display:none}
 
-    .services-layout{display:grid;grid-template-columns:280px 1fr;gap:18px}.services-main .grid.cols-2{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+    main.container{max-width:1240px;padding:22px 16px 30px!important}
+    .public-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;margin:-2px 0 16px;position:relative;z-index:2}
+    .public-nav .btn{position:relative;min-height:58px;width:100%;text-align:left;display:flex;align-items:center;justify-content:center;gap:13px;padding:14px 18px;border-radius:9px;overflow:hidden;background:#fff;color:#0f1420;border:1px solid #e8edf4;box-shadow:0 8px 22px rgba(16,21,33,.08);font-size:.88rem}
+    .public-nav .btn::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:transparent;transition:background var(--transition)}
+    .public-nav .btn:hover{transform:translateY(-3px);border-color:rgba(213,16,16,.18);box-shadow:0 14px 26px rgba(16,21,33,.11)}
+    .public-nav .btn.active{color:var(--primary-red);border-color:rgba(213,16,16,.18);background:#fffdfd;box-shadow:0 12px 28px rgba(213,16,16,.09),0 10px 22px rgba(16,21,33,.08)}
+    .public-nav .btn.active::after{background:var(--primary-red)}
+    .public-nav .nav-icon{flex:0 0 auto;width:auto;height:auto;display:inline-grid;place-items:center;border-radius:0;font-size:1.5rem;color:#0f1420;background:transparent;transition:transform var(--transition),color var(--transition)}
+    .public-nav .btn:hover .nav-icon,.public-nav .btn.active .nav-icon{transform:scale(1.08);background:transparent;color:var(--primary-red)}
+    .public-nav .nav-text{display:inline-flex;flex-direction:row;align-items:center;gap:6px;font-size:.9rem;font-weight:800;line-height:1.2;white-space:nowrap}
+    .public-nav .nav-kicker{font-size:.9rem;font-weight:800;letter-spacing:0;text-transform:none;color:inherit}.public-nav .btn.active .nav-kicker{color:inherit}
+
+    .services-layout{display:block}.services-main{width:100%}.services-main .grid.cols-2{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
     .service-menu{padding:14px;background:linear-gradient(180deg,#fff,#f9fbff)}.menu-item{display:block;width:100%;text-align:left;border:1px solid #e5eaf5;background:#fff;border-radius:10px;padding:14px 10px;font-weight:700;color:#3d4554;border-left:4px solid transparent;cursor:pointer;transition:all var(--transition);margin-bottom:8px}.menu-item.active,.menu-item:hover{color:var(--primary-red);background:#fff6f6;border-left-color:var(--primary-red);box-shadow:0 8px 20px rgba(16,21,33,.08)}
-    .services-title{font-size:2rem;margin:4px 0 10px;color:#111}
+    .services-title{position:relative;font-size:1.55rem;margin:10px 0 28px;color:#0f1420;text-align:center;letter-spacing:.02em;font-weight:800}.services-title::before{content:"";position:absolute;left:50%;bottom:-16px;width:290px;max-width:60vw;height:1px;background:linear-gradient(90deg,transparent,#dfe5ef,transparent);transform:translateX(-50%)}.services-title::after{content:"⚙";position:absolute;left:50%;bottom:-25px;transform:translateX(-50%);width:28px;height:20px;background:var(--light-bg);color:var(--primary-red);display:grid;place-items:center;font-size:1rem}
+    .services-main .card{position:relative;overflow:hidden;display:grid;grid-template-columns:74px 1fr;align-items:center;gap:14px;border-color:#e8edf5;min-height:114px;padding:22px 18px;border-left:0;border-radius:8px;background:#fff;box-shadow:0 8px 22px rgba(16,21,33,.07)}
+    .services-main .card::before{display:none}.services-main .card:hover{transform:translateY(-5px);border-color:rgba(213,16,16,.22);box-shadow:0 18px 34px rgba(16,21,33,.12)}.services-main .card:hover .service-icon{border-color:rgba(213,16,16,.24);background:#fff1f1;transform:scale(1.04)}
+    .services-main .card h3{font-size:.93rem;font-weight:800;color:#0f1420;margin:0 0 8px}.services-main .card p{font-size:.78rem;line-height:1.48;margin:0;color:#3f4858}.service-icon{width:68px;height:68px;border-radius:999px;background:#fff1f1;color:var(--primary-red);display:grid;place-items:center;font-size:2rem;border:1px solid rgba(213,16,16,.08);transition:transform var(--transition),background var(--transition),border-color var(--transition)}
+    .contact-bar{display:flex;align-items:center;gap:18px;background:#fff;border:1px solid #e8edf5;padding:18px 22px;border-radius:8px;box-shadow:0 8px 22px rgba(16,21,33,.07)}.contact-bar::before{content:"☘";width:36px;height:36px;display:grid;place-items:center;border-radius:999px;color:#20b455;font-size:1.8rem}.contact-bar a{color:#0b35ff;text-decoration:none}
 
     @media (max-width:960px){
-      .head-inner{flex-direction:column;align-items:flex-start}
-      .hero-inner{grid-template-columns:1fr}
-      .services-layout{grid-template-columns:1fr}
-      .public-nav{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .search-wrap{grid-template-columns:1fr}
-      .top-nav{flex-direction:column}
-      .top-nav .action-row{justify-content:flex-start}
-      table{display:block;overflow-x:auto;white-space:nowrap}
+      .head-inner{flex-direction:row;align-items:center}.hero-inner{grid-template-columns:1fr}.hero-bike{display:none}.hero-copy h1{font-size:2.65rem}.services-main .grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.public-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.search-wrap{grid-template-columns:1fr}.top-nav{flex-direction:column}.top-nav .action-row{justify-content:flex-start}table{display:block;overflow-x:auto;white-space:nowrap}
     }
     @media (max-width:640px){
-      .hero{padding:44px 0 58px}
-      .public-nav{grid-template-columns:1fr;margin-top:-34px}
-      .card{padding:16px}
-      .action-row .btn,.top-nav .btn{width:100%}
+      .brand strong{font-size:1.45rem}.brand span{font-size:.86rem}.head-inner{align-items:flex-start;flex-direction:column}.hero{min-height:auto}.hero-inner{min-height:auto}.hero-copy{padding:32px 0}.hero-copy h1{font-size:2.25rem}.hero-trust{gap:12px}.hero-actions .btn{width:100%;min-width:0}.public-nav{grid-template-columns:1fr;margin-top:0;gap:12px}.public-nav .btn{min-height:58px;padding:13px 16px;justify-content:flex-start}.services-main .grid.cols-2{grid-template-columns:1fr;gap:12px}.services-main .card{grid-template-columns:62px 1fr}.service-icon{width:58px;height:58px;font-size:1.7rem}.card{padding:16px}.action-row .btn,.top-nav .btn{width:100%}.contact-bar{align-items:flex-start;gap:12px}
     }
 
     @media print{
@@ -192,47 +273,59 @@
   </header>
 
   <section class="hero">
+    <img class="hero-photo" src="assets/homepage-hero-service.svg" alt="Red Honda motorcycle being serviced by a mechanic in a workshop">
     <div class="container hero-inner">
       <div class="hero-copy">
-        <p style="font-weight:700;letter-spacing:.08em;color:#5e6778">AUTHORIZED WORKSHOP • TRUSTED EXPERTISE</p>
-        <p class="muted-light">From routine maintenance to major repairs — we keep your ride performing at its best.</p>
+        <p class="hero-eyebrow">Authorized Workshop • Trusted Expertise</p>
+        <h1>Where Every Service<br>Builds <span>Trust.</span></h1>
+        <p class="muted-light">From routine maintenance to major repairs —<br>we keep your ride performing at its best.</p>
         <p id="heroHookLine" style="margin-top:10px">Where Every Service Builds Trust..</p>
+        <div class="hero-trust" aria-label="Service highlights">
+          <span class="trust-item"><span class="trust-icon">♜</span>Genuine Parts</span>
+          <span class="trust-item"><span class="trust-icon">♙</span>Expert Mechanics</span>
+          <span class="trust-item"><span class="trust-icon">⚙</span>Quality Service</span>
+        </div>
+        <div class="hero-actions">
+          <button class="btn" type="button" onclick="document.getElementById('showBookBtn').click()">▣ Book Appointment</button>
+          <a class="btn secondary" href="https://wa.me/923021046816">◔ Contact Us (WhatsApp)</a>
+        </div>
         <button class="btn hidden" id="publicHomeBtn" style="margin-top:8px">Back to Public Home</button>
       </div>
-      <div class="hero-bike">
-        <img src="https://images.honda.com.pk/images/Bikes/125/CG125SE-Red.png" alt="Honda Bike" onerror="this.style.display='none'" style="filter:drop-shadow(0 24px 32px rgba(16,21,33,.2));">
-      </div>
+      <div class="hero-bike" aria-hidden="true"></div>
     </div>
   </section>
 
   <main class="container" style="padding:20px">
     <div id="publicSection">
-      <div class="public-nav">
-        <button class="btn" id="showServicesBtn">1. Our Services</button>
-        <button class="btn secondary" id="showBookBtn">2. Book Appointment</button>
-        <button class="btn secondary" id="showBikeSalesBtn">3. Bikes for Sale</button>
-        <button class="btn secondary" id="showFeedbackBtn">4. Leave Feedback</button>
+      <div class="public-nav" aria-label="Public navigation">
+        <button class="btn active" id="showServicesBtn"><span class="nav-icon">⌘</span><span class="nav-text"><span class="nav-kicker">1.</span> Our Services</span></button>
+        <button class="btn secondary" id="showBookBtn"><span class="nav-icon">▣</span><span class="nav-text"><span class="nav-kicker">2.</span> Book Appointment</span></button>
+        <button class="btn secondary" id="showBikeSalesBtn"><span class="nav-icon">☊</span><span class="nav-text"><span class="nav-kicker">3.</span> Bikes for Sale</span></button>
+        <button class="btn secondary" id="showFeedbackBtn"><span class="nav-icon">☆</span><span class="nav-text"><span class="nav-kicker">4.</span> Leave Feedback</span></button>
+      </div>
+      <div class="hidden" aria-hidden="true">
+        <button class="menu-item active" id="showServicesBtnSide" tabindex="-1">01 OUR SERVICES</button>
+        <button class="menu-item" id="showBookBtnSide" tabindex="-1">02 BOOK APPOINTMENT</button>
+        <button class="menu-item" id="showBikeSalesBtnSide" tabindex="-1">03 BIKES FOR SALE</button>
+        <button class="menu-item" id="showFeedbackBtnSide" tabindex="-1">04 LEAVE FEEDBACK</button>
       </div>
 
       <section id="servicesPage" class="services-layout">
-        <aside class="service-menu card">
-          <button class="menu-item active" id="showServicesBtnSide">01 OUR SERVICES</button>
-          <button class="menu-item" id="showBookBtnSide">02 BOOK APPOINTMENT</button>
-          <button class="menu-item" id="showBikeSalesBtnSide">03 BIKES FOR SALE</button>
-          <button class="menu-item" id="showFeedbackBtnSide">04 LEAVE FEEDBACK</button>
-        </aside>
         <div class="services-main">
           <h3 class="services-title">OUR SERVICES</h3>
           <div class="grid cols-2">
-        <div class="card"><h3>Engine & Tune-up</h3><p class="muted">Periodic tuning, carburetor checks, valve settings and performance optimization.</p></div>
-        <div class="card"><h3>Oil & Brake Service</h3><p class="muted">Oil change, brake shoe replacement, cable and safety inspections.</p></div>
-        <div class="card"><h3>General Inspection</h3><p class="muted">Full bike check-up including safety points, bolts tightening, and performance review.</p></div>
-        <div class="card"><h3>Battery Replacement & Service</h3><p class="muted">Battery health check, charging system test, and replacement if needed.</p></div>
-        <div class="card"><h3>Clutch & Gear Service</h3><p class="muted">Clutch plate inspection, cable adjustment, and smooth gear shifting optimization.</p></div>
-        <div class="card"><h3>Chain & Sprocket Service</h3><p class="muted">Chain cleaning, lubrication, adjustment, and sprocket inspection for smooth power delivery.</p></div>
-        <div class="card"><h3>Electrical System Check</h3><p class="muted">Battery testing, wiring inspection, lights, indicators, and ignition system diagnostics.</p></div>
-        <div class="card"><h3>Fuel System Cleaning</h3><p class="muted">Carburetor cleaning, fuel line inspection, and improved fuel efficiency.</p></div>
-        <div class="card"><h3>Suspension & Shock Service</h3><p class="muted">Front fork oil check, rear shock inspection, and ride comfort improvement.</p></div>
+        <div class="card"><span class="service-icon">▰</span><div><h3>Engine & Tune-up</h3><p class="muted">Periodic tuning, carburetor checks, valve setting and performance optimization.</p></div></div>
+        <div class="card"><span class="service-icon">♘</span><div><h3>Oil & Brake Service</h3><p class="muted">Oil change, brake shoe replacement, cable and safety inspections.</p></div></div>
+        <div class="card"><span class="service-icon">▤</span><div><h3>General Inspection</h3><p class="muted">Full bike check-up including safety points, bolts tightening, and performance review.</p></div></div>
+        <div class="card"><span class="service-icon">⊞</span><div><h3>Battery Replacement & Service</h3><p class="muted">Battery health check, charging system test, and replacement if needed.</p></div></div>
+        <div class="card"><span class="service-icon">◉</span><div><h3>Clutch & Gear Service</h3><p class="muted">Clutch plate inspection, cable adjustment, and smooth gear shifting optimization.</p></div></div>
+        <div class="card"><span class="service-icon">∞</span><div><h3>Chain & Sprocket Service</h3><p class="muted">Chain cleaning, lubrication, adjustment, and sprocket inspection for smooth power delivery.</p></div></div>
+        <div class="card"><span class="service-icon">ϟ</span><div><h3>Electrical System Check</h3><p class="muted">Battery testing, wiring inspection, lights, indicators, and ignition system diagnostics.</p></div></div>
+        <div class="card"><span class="service-icon">▯</span><div><h3>Fuel System Cleaning</h3><p class="muted">Carburetor cleaning, fuel line inspection, and improved fuel efficiency.</p></div></div>
+        <div class="card"><span class="service-icon">╋</span><div><h3>Suspension & Shock Service</h3><p class="muted">Front fork oil check, rear shock inspection, and ride comfort improvement.</p></div></div>
+        <div class="card"><span class="service-icon">◎</span><div><h3>Wheel & Tyre Service</h3><p class="muted">Tyre pressure check, wheel alignment, balancing, and tube/tyre replacement.</p></div></div>
+        <div class="card"><span class="service-icon">▱</span><div><h3>Exhaust System Service</h3><p class="muted">Exhaust cleaning, leak inspection, and performance optimization.</p></div></div>
+        <div class="card"><span class="service-icon">✦</span><div><h3>Bike Detailing</h3><p class="muted">Full body cleaning, polishing, chain cleaning, and premium bike care.</p></div></div>
       </div>
         </div>
       </section>
@@ -490,18 +583,40 @@ el('searchBill').addEventListener('input',()=>{
   toggleSearchMode();
 });
 
+function readSavedJSON(key, fallback){
+  try{return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));}
+  catch(err){console.warn(`Saved data for ${key} could not be read; using fallback.`, err); return fallback;}
+}
+function mergeRecords(localRows, remoteRows, keyFn){
+  const merged = new Map();
+  [...(localRows || []), ...(remoteRows || [])].forEach((row, idx)=>{
+    if(!row) return;
+    const key = keyFn(row) || `row-${idx}-${JSON.stringify(row)}`;
+    merged.set(key, {...(merged.get(key) || {}), ...row});
+  });
+  return [...merged.values()];
+}
+function invoiceKey(inv){return inv.billNo || `${inv.phone || ''}-${inv.createdAtISO || inv.time || ''}-${inv.total || 0}`;}
+function extraKey(item){return item.id || `${item.createdAt || item.time || ''}-${item.type || ''}-${JSON.stringify(item.payload || item).slice(0,80)}`;}
+function persistCoreData(){
+  localStorage.setItem('kh_clients', JSON.stringify(storage.clients));
+  localStorage.setItem('kh_invoices', JSON.stringify(storage.invoices));
+  localStorage.setItem('kh_inventory', JSON.stringify(storage.inventory));
+}
 function loadLocalExtras(){
-  storage.appointments = JSON.parse(localStorage.getItem('kh_appointments') || '[]');
-  storage.feedback = JSON.parse(localStorage.getItem('kh_feedback') || '[]');
-  storage.notifications = JSON.parse(localStorage.getItem('kh_notifications') || '[]');
-  storage.bikes = JSON.parse(localStorage.getItem('kh_bikes') || '[]');
+  storage.appointments = readSavedJSON('kh_appointments', []);
+  storage.feedback = readSavedJSON('kh_feedback', []);
+  storage.notifications = readSavedJSON('kh_notifications', []);
+  storage.bikes = readSavedJSON('kh_bikes', []);
 }
 async function loadPublicData(){
   loadLocalExtras();
   if(firebaseReady){
     try{
       const bikesSnap = await getDocs(collection(db, 'bikes'));
-      storage.bikes = bikesSnap.docs.map(d=>({id:d.id, ...d.data()}));
+      const remoteBikes = bikesSnap.docs.map(d=>({id:d.id, ...d.data()}));
+      storage.bikes = mergeRecords(storage.bikes, remoteBikes, b=>b.id);
+      persistExtra();
     }catch(err){
       console.warn('Firebase bike load failed; using local bike listings:', err);
     }
@@ -510,23 +625,39 @@ async function loadPublicData(){
 }
 async function loadData(){
   loadLocalExtras();
-  storage.clients = JSON.parse(localStorage.getItem('kh_clients') || '{}');
-  storage.invoices = JSON.parse(localStorage.getItem('kh_invoices') || '[]');
-  storage.inventory = JSON.parse(localStorage.getItem('kh_inventory') || '[]');
+  storage.clients = readSavedJSON('kh_clients', {});
+  storage.invoices = readSavedJSON('kh_invoices', []);
+  storage.inventory = readSavedJSON('kh_inventory', []);
   if(!firebaseReady) return;
   try{
     const clientsSnap = await getDocs(collection(db, 'clients'));
-    storage.clients = {};
-    clientsSnap.forEach(d=>storage.clients[d.id]=d.data());
+    const remoteClients = {};
+    clientsSnap.forEach(d=>remoteClients[d.id]=d.data());
+    storage.clients = {...storage.clients, ...remoteClients};
 
     const invoicesSnap = await getDocs(collection(db, 'invoices'));
-    storage.invoices = invoicesSnap.docs.map(d=>d.data());
+    const remoteInvoices = invoicesSnap.docs.map(d=>({id:d.id, ...d.data()}));
+    storage.invoices = mergeRecords(storage.invoices, remoteInvoices, invoiceKey);
 
     const invSnap = await getDocs(collection(db, 'inventory'));
-    storage.inventory = invSnap.docs.map(d=>d.data());
+    const remoteInventory = invSnap.docs.map(d=>({sku:d.id, ...d.data()}));
+    storage.inventory = mergeRecords(storage.inventory, remoteInventory, item=>item.sku);
 
     const bikesSnap = await getDocs(collection(db, 'bikes'));
-    storage.bikes = bikesSnap.docs.map(d=>({id:d.id, ...d.data()}));
+    const remoteBikes = bikesSnap.docs.map(d=>({id:d.id, ...d.data()}));
+    storage.bikes = mergeRecords(storage.bikes, remoteBikes, b=>b.id);
+
+    const appointmentsSnap = await getDocs(collection(db, 'appointments'));
+    storage.appointments = mergeRecords(storage.appointments, appointmentsSnap.docs.map(d=>({id:d.id, ...d.data()})), extraKey);
+
+    const feedbackSnap = await getDocs(collection(db, 'feedback'));
+    storage.feedback = mergeRecords(storage.feedback, feedbackSnap.docs.map(d=>({id:d.id, ...d.data()})), extraKey);
+
+    const notificationsSnap = await getDocs(collection(db, 'notifications'));
+    storage.notifications = mergeRecords(storage.notifications, notificationsSnap.docs.map(d=>({id:d.id, ...d.data()})), extraKey);
+
+    persistCoreData();
+    persistExtra();
   }catch(err){
     console.warn('Firebase data load failed; using local saved data:', err);
   }
@@ -553,8 +684,12 @@ function persistExtra(){
 }
 
 function addNotification(type, payload){
-  storage.notifications.unshift({id:Date.now().toString(), type, time:now(), payload, read:false});
+  const notification = {id:Date.now().toString(), type, time:now(), payload, read:false};
+  storage.notifications.unshift(notification);
   persistExtra();
+  if(firebaseReady){
+    addDoc(collection(db,'notifications'), notification).catch(err=>console.warn('Firebase notification save failed:', err));
+  }
 }
 
 async function saveInventoryItem(item, originalSku=''){
@@ -613,10 +748,21 @@ if(openAdminBtn) openAdminBtn.onclick=async ()=>{
 el('publicHomeBtn').onclick=()=>{el('logoutBtn').click(); window.scrollTo({top:0,behavior:'smooth'});};
 
 function setActiveServiceMenu(pageId){
-  const map={servicesPage:'showServicesBtnSide',bookPage:'showBookBtnSide',bikeSalesPage:'showBikeSalesBtnSide',feedbackPage:'showFeedbackBtnSide'};
-  Object.values(map).forEach(id=>el(id)?.classList.remove('active'));
-  const activeId=map[pageId];
-  if(activeId) el(activeId)?.classList.add('active');
+  const sideMap={servicesPage:'showServicesBtnSide',bookPage:'showBookBtnSide',bikeSalesPage:'showBikeSalesBtnSide',feedbackPage:'showFeedbackBtnSide'};
+  const topMap={servicesPage:'showServicesBtn',bookPage:'showBookBtn',bikeSalesPage:'showBikeSalesBtn',feedbackPage:'showFeedbackBtn'};
+  Object.values(sideMap).forEach(id=>el(id)?.classList.remove('active'));
+  Object.values(topMap).forEach(id=>{
+    const btn=el(id);
+    btn?.classList.remove('active');
+    btn?.classList.add('secondary');
+  });
+  const activeSideId=sideMap[pageId];
+  const activeTopId=topMap[pageId];
+  if(activeSideId) el(activeSideId)?.classList.add('active');
+  if(activeTopId){
+    el(activeTopId)?.classList.add('active');
+    el(activeTopId)?.classList.remove('secondary');
+  }
 }
 
 function showPublicPage(pageId){
@@ -638,6 +784,9 @@ el('submitAppointmentBtn').onclick=()=>{
   const appointment={name,phone,bikeType,services,date,time,notes:el('apptNotes').value.trim(),createdAt:now()};
   storage.appointments.push(appointment);
   persistExtra();
+  if(firebaseReady){
+    addDoc(collection(db,'appointments'), appointment).catch(err=>console.warn('Firebase appointment save failed:', err));
+  }
   addNotification('appointment', appointment);
   alert(`Appointment request submitted for ${name} on ${date} at ${time}.\nServices: ${services.join(', ')}`);
   ['apptName','apptPhone','apptBikeType','apptDate','apptTime','apptNotes'].forEach(id=>el(id).value='');
@@ -650,6 +799,9 @@ el('savePublicFeedbackBtn').onclick=()=>{
   storage.feedback.push(feedback);
   el('publicFeedbackText').value='';
   persistExtra();
+  if(firebaseReady){
+    addDoc(collection(db,'feedback'), feedback).catch(err=>console.warn('Firebase feedback save failed:', err));
+  }
   addNotification('feedback', feedback);
   alert('Feedback submitted.');
 };
