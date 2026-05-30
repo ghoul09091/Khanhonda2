@@ -197,17 +197,37 @@
     .modal-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px}
 
 
-    .site-header{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20}
-    .head-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px}
-    .brand{display:flex;align-items:center;gap:8px;color:var(--primary-red)}
-    .brand strong{font-size:1.6rem;letter-spacing:.04em}.brand span{font-weight:700}
-    .brand-mark{font-size:1.6rem}
+    .site-header{background:#fff;border-bottom:1px solid #eef1f6;position:sticky;top:0;z-index:20;box-shadow:0 2px 14px rgba(16,21,33,.04)}
+    .head-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:72px;padding:10px 16px}
+    .brand{display:flex;align-items:center;gap:12px;color:var(--primary-red)}
+    .brand strong{font-size:1.85rem;letter-spacing:.01em;font-weight:800}.brand span{font-weight:600;color:#111827;font-size:1rem}
+    .brand-mark{width:38px;height:30px;display:inline-block;color:var(--primary-red);font-size:0;background:currentColor;clip-path:polygon(0 70%,100% 0,87% 16%,16% 58%,86% 26%,76% 39%,20% 68%,72% 48%,62% 61%,22% 80%)}
+    #openAdminBtnTop{min-height:42px;border-radius:8px;padding:0 18px;display:inline-flex;align-items:center;gap:8px;box-shadow:0 10px 22px rgba(213,16,16,.22)}
+    #openAdminBtnTop::before{content:"👤";font-size:1rem;filter:brightness(0) invert(1)}
     .head-nav{display:flex;gap:26px;flex-wrap:wrap}.head-nav a{text-decoration:none;color:#222;font-weight:600;padding:6px 0}.head-nav a.active{color:var(--primary-red);border-bottom:3px solid var(--primary-red)}
 
-    .hero{background:linear-gradient(130deg,#ffffff 0%,#f8f9fc 52%,#ffeaea 100%);color:var(--dark);box-shadow:inset 0 -1px 0 rgba(16,21,33,.06);padding:38px 0 26px}
-    .hero::before{display:none}.hero-inner{display:grid;grid-template-columns:1fr 1.1fr;align-items:center;gap:10px}
-    .hero-copy h1{font-size:3.8rem;line-height:.95;letter-spacing:.01em}.hero-copy .khan{font-size:3rem;color:#2b3444}.hero-copy .service{color:var(--primary-red);font-weight:800;text-shadow:0 10px 24px rgba(213,16,16,.18)}
-    .muted-light{color:#424b5b}.hero-bike img{width:100%;max-height:500px;object-fit:contain}
+    .hero{
+      min-height:376px;
+      padding:0;
+      color:#fff;
+      background:
+        radial-gradient(circle at 78% 38%,rgba(213,16,16,.22) 0 12%,transparent 29%),
+        linear-gradient(90deg,rgba(2,6,14,.98) 0%,rgba(2,6,14,.92) 42%,rgba(2,6,14,.62) 68%,rgba(2,6,14,.90) 100%),
+        linear-gradient(135deg,#050910 0%,#1a1d22 48%,#3c1010 100%);
+      box-shadow:inset 0 -1px 0 rgba(255,255,255,.08),0 18px 42px rgba(16,21,33,.18);
+    }
+    .hero::before{display:block;content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:80px 80px;opacity:.18}
+    .hero::after{content:"";position:absolute;right:0;bottom:0;width:48%;height:100%;background:linear-gradient(90deg,transparent,rgba(213,16,16,.16));pointer-events:none}
+    .hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1.02fr .98fr;align-items:center;gap:22px;min-height:376px}
+    .hero-copy{padding:34px 0 30px}.hero-copy p{margin:0}
+    .hero-eyebrow{display:flex;align-items:center;gap:8px;font-size:.76rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;margin-bottom:12px!important}.hero-eyebrow::before,.hero-eyebrow::after{content:"";width:12px;height:2px;background:var(--primary-red);display:inline-block}
+    .hero-copy h1{font-size:3.05rem;line-height:1.18;letter-spacing:-.04em;margin:0 0 12px;font-weight:800;color:#fff}.hero-copy h1 span{color:#ff2a2a}
+    .muted-light{color:rgba(255,255,255,.90);font-size:1.02rem;line-height:1.55;max-width:510px!important;margin-bottom:16px!important}
+    #heroHookLine{display:none}
+    .hero-trust{display:flex;gap:26px;flex-wrap:wrap;margin:18px 0 18px}.trust-item{display:inline-flex;align-items:center;gap:10px;font-size:.9rem;font-weight:700;color:#fff}.trust-icon{width:34px;height:34px;border:1px solid rgba(213,16,16,.55);border-radius:999px;display:grid;place-items:center;color:#ff2828;background:rgba(213,16,16,.10);box-shadow:0 8px 18px rgba(0,0,0,.22)}
+    .hero-actions{display:flex;gap:16px;flex-wrap:wrap}.hero-actions .btn{min-width:222px;min-height:52px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;gap:12px;font-size:.92rem}.hero-actions .btn.secondary{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.72);color:#fff;box-shadow:none}.hero-actions .btn.secondary:hover{background:rgba(255,255,255,.12)}
+    .hero-bike{align-self:stretch;display:flex;align-items:flex-end;justify-content:flex-end;position:relative;overflow:visible}.hero-bike::before{content:"";position:absolute;right:4%;bottom:22px;width:62%;height:32%;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.56),transparent 68%);filter:blur(6px)}
+    .hero-bike img{position:relative;width:112%;max-width:650px;max-height:388px;object-fit:contain;filter:drop-shadow(0 24px 32px rgba(0,0,0,.48));transform:translate(26px,4px)}
 
     .services-layout{display:block}.services-main{width:100%}.services-main .grid.cols-2{grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
     .service-menu{padding:14px;background:linear-gradient(180deg,#fff,#f9fbff)}.menu-item{display:block;width:100%;text-align:left;border:1px solid #e5eaf5;background:#fff;border-radius:10px;padding:14px 10px;font-weight:700;color:#3d4554;border-left:4px solid transparent;cursor:pointer;transition:all var(--transition);margin-bottom:8px}.menu-item.active,.menu-item:hover{color:var(--primary-red);background:#fff6f6;border-left-color:var(--primary-red);box-shadow:0 8px 20px rgba(16,21,33,.08)}
@@ -257,13 +277,23 @@
   <section class="hero">
     <div class="container hero-inner">
       <div class="hero-copy">
-        <p style="font-weight:700;letter-spacing:.08em;color:#5e6778">AUTHORIZED WORKSHOP • TRUSTED EXPERTISE</p>
-        <p class="muted-light">From routine maintenance to major repairs — we keep your ride performing at its best.</p>
+        <p class="hero-eyebrow">Authorized Workshop • Trusted Expertise</p>
+        <h1>Where Every Service<br>Builds <span>Trust.</span></h1>
+        <p class="muted-light">From routine maintenance to major repairs —<br>we keep your ride performing at its best.</p>
         <p id="heroHookLine" style="margin-top:10px">Where Every Service Builds Trust..</p>
+        <div class="hero-trust" aria-label="Service highlights">
+          <span class="trust-item"><span class="trust-icon">♜</span>Genuine Parts</span>
+          <span class="trust-item"><span class="trust-icon">♙</span>Expert Mechanics</span>
+          <span class="trust-item"><span class="trust-icon">⚙</span>Quality Service</span>
+        </div>
+        <div class="hero-actions">
+          <button class="btn" type="button" onclick="document.getElementById('showBookBtn').click()">▣ Book Appointment</button>
+          <a class="btn secondary" href="https://wa.me/923021046816">◔ Contact Us (WhatsApp)</a>
+        </div>
         <button class="btn hidden" id="publicHomeBtn" style="margin-top:8px">Back to Public Home</button>
       </div>
       <div class="hero-bike">
-        <img src="https://images.honda.com.pk/images/Bikes/125/CG125SE-Red.png" alt="Honda Bike" onerror="this.style.display='none'" style="filter:drop-shadow(0 24px 32px rgba(16,21,33,.2));">
+        <img src="https://images.honda.com.pk/images/Bikes/125/CG125SE-Red.png" alt="Honda Bike" onerror="this.style.display='none'">
       </div>
     </div>
   </section>
@@ -287,15 +317,18 @@
         <div class="services-main">
           <h3 class="services-title">OUR SERVICES</h3>
           <div class="grid cols-2">
-        <div class="card"><h3>Engine & Tune-up</h3><p class="muted">Periodic tuning, carburetor checks, valve settings and performance optimization.</p></div>
-        <div class="card"><h3>Oil & Brake Service</h3><p class="muted">Oil change, brake shoe replacement, cable and safety inspections.</p></div>
-        <div class="card"><h3>General Inspection</h3><p class="muted">Full bike check-up including safety points, bolts tightening, and performance review.</p></div>
-        <div class="card"><h3>Battery Replacement & Service</h3><p class="muted">Battery health check, charging system test, and replacement if needed.</p></div>
-        <div class="card"><h3>Clutch & Gear Service</h3><p class="muted">Clutch plate inspection, cable adjustment, and smooth gear shifting optimization.</p></div>
-        <div class="card"><h3>Chain & Sprocket Service</h3><p class="muted">Chain cleaning, lubrication, adjustment, and sprocket inspection for smooth power delivery.</p></div>
-        <div class="card"><h3>Electrical System Check</h3><p class="muted">Battery testing, wiring inspection, lights, indicators, and ignition system diagnostics.</p></div>
-        <div class="card"><h3>Fuel System Cleaning</h3><p class="muted">Carburetor cleaning, fuel line inspection, and improved fuel efficiency.</p></div>
-        <div class="card"><h3>Suspension & Shock Service</h3><p class="muted">Front fork oil check, rear shock inspection, and ride comfort improvement.</p></div>
+        <div class="card"><span class="service-icon">▰</span><div><h3>Engine & Tune-up</h3><p class="muted">Periodic tuning, carburetor checks, valve setting and performance optimization.</p></div></div>
+        <div class="card"><span class="service-icon">♘</span><div><h3>Oil & Brake Service</h3><p class="muted">Oil change, brake shoe replacement, cable and safety inspections.</p></div></div>
+        <div class="card"><span class="service-icon">▤</span><div><h3>General Inspection</h3><p class="muted">Full bike check-up including safety points, bolts tightening, and performance review.</p></div></div>
+        <div class="card"><span class="service-icon">⊞</span><div><h3>Battery Replacement & Service</h3><p class="muted">Battery health check, charging system test, and replacement if needed.</p></div></div>
+        <div class="card"><span class="service-icon">◉</span><div><h3>Clutch & Gear Service</h3><p class="muted">Clutch plate inspection, cable adjustment, and smooth gear shifting optimization.</p></div></div>
+        <div class="card"><span class="service-icon">∞</span><div><h3>Chain & Sprocket Service</h3><p class="muted">Chain cleaning, lubrication, adjustment, and sprocket inspection for smooth power delivery.</p></div></div>
+        <div class="card"><span class="service-icon">ϟ</span><div><h3>Electrical System Check</h3><p class="muted">Battery testing, wiring inspection, lights, indicators, and ignition system diagnostics.</p></div></div>
+        <div class="card"><span class="service-icon">▯</span><div><h3>Fuel System Cleaning</h3><p class="muted">Carburetor cleaning, fuel line inspection, and improved fuel efficiency.</p></div></div>
+        <div class="card"><span class="service-icon">╋</span><div><h3>Suspension & Shock Service</h3><p class="muted">Front fork oil check, rear shock inspection, and ride comfort improvement.</p></div></div>
+        <div class="card"><span class="service-icon">◎</span><div><h3>Wheel & Tyre Service</h3><p class="muted">Tyre pressure check, wheel alignment, balancing, and tube/tyre replacement.</p></div></div>
+        <div class="card"><span class="service-icon">▱</span><div><h3>Exhaust System Service</h3><p class="muted">Exhaust cleaning, leak inspection, and performance optimization.</p></div></div>
+        <div class="card"><span class="service-icon">✦</span><div><h3>Bike Detailing</h3><p class="muted">Full body cleaning, polishing, chain cleaning, and premium bike care.</p></div></div>
       </div>
         </div>
       </section>
