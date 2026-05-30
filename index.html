@@ -76,8 +76,65 @@
     .btn.secondary{background:#fff;color:var(--dark);border:1px solid var(--border);box-shadow:var(--shadow-sm)}
     .btn.ok{background:linear-gradient(135deg,var(--ok),#0f7036)}
 
-    .public-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:-46px 0 26px;position:relative;z-index:2}
-    .public-nav .btn{width:100%;text-align:left;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:14px}
+    .public-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin:-44px 0 34px;position:relative;z-index:2}
+    .public-nav .btn{
+      position:relative;
+      min-height:86px;
+      width:100%;
+      text-align:left;
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      gap:14px;
+      padding:18px 20px;
+      border-radius:18px;
+      overflow:hidden;
+      background:linear-gradient(145deg,#ffffff 0%,#f8faff 100%);
+      color:var(--dark);
+      border:1px solid rgba(213,16,16,.10);
+      box-shadow:0 14px 34px rgba(16,21,33,.10);
+    }
+    .public-nav .btn::after{
+      content:"";
+      position:absolute;
+      left:18px;
+      right:18px;
+      bottom:0;
+      height:4px;
+      border-radius:999px 999px 0 0;
+      background:transparent;
+      transition:background var(--transition),transform var(--transition);
+      transform:scaleX(.35);
+      transform-origin:center;
+    }
+    .public-nav .btn:hover{
+      transform:translateY(-4px);
+      border-color:rgba(213,16,16,.36);
+      box-shadow:0 20px 42px rgba(16,21,33,.14),0 10px 24px rgba(213,16,16,.10);
+    }
+    .public-nav .btn.active{
+      color:var(--primary-red);
+      border-color:rgba(213,16,16,.30);
+      background:linear-gradient(145deg,#fff8f8 0%,#ffffff 64%);
+      box-shadow:0 18px 42px rgba(213,16,16,.13),0 12px 28px rgba(16,21,33,.10);
+    }
+    .public-nav .btn.active::after{background:var(--primary-red);transform:scaleX(1)}
+    .public-nav .nav-icon{
+      flex:0 0 42px;
+      width:42px;
+      height:42px;
+      display:grid;
+      place-items:center;
+      border-radius:14px;
+      font-size:1.45rem;
+      color:var(--primary-red);
+      background:rgba(213,16,16,.08);
+      transition:transform var(--transition),background var(--transition),color var(--transition);
+    }
+    .public-nav .btn:hover .nav-icon,.public-nav .btn.active .nav-icon{transform:scale(1.06);background:var(--primary-red);color:#fff}
+    .public-nav .nav-text{display:flex;flex-direction:column;gap:2px;font-size:1rem;font-weight:800;line-height:1.2}
+    .public-nav .nav-kicker{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+    .public-nav .btn.active .nav-kicker{color:var(--primary-red-dark)}
 
     .card{
       background:var(--card);
@@ -152,14 +209,18 @@
     .hero-copy h1{font-size:3.8rem;line-height:.95;letter-spacing:.01em}.hero-copy .khan{font-size:3rem;color:#2b3444}.hero-copy .service{color:var(--primary-red);font-weight:800;text-shadow:0 10px 24px rgba(213,16,16,.18)}
     .muted-light{color:#424b5b}.hero-bike img{width:100%;max-height:500px;object-fit:contain}
 
-    .services-layout{display:grid;grid-template-columns:280px 1fr;gap:18px}.services-main .grid.cols-2{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+    .services-layout{display:block}.services-main{width:100%}.services-main .grid.cols-2{grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
     .service-menu{padding:14px;background:linear-gradient(180deg,#fff,#f9fbff)}.menu-item{display:block;width:100%;text-align:left;border:1px solid #e5eaf5;background:#fff;border-radius:10px;padding:14px 10px;font-weight:700;color:#3d4554;border-left:4px solid transparent;cursor:pointer;transition:all var(--transition);margin-bottom:8px}.menu-item.active,.menu-item:hover{color:var(--primary-red);background:#fff6f6;border-left-color:var(--primary-red);box-shadow:0 8px 20px rgba(16,21,33,.08)}
-    .services-title{font-size:2rem;margin:4px 0 10px;color:#111}
+    .services-title{font-size:2rem;margin:4px 0 18px;color:#111;text-align:center;letter-spacing:.03em}
+    .services-main .card{position:relative;overflow:hidden;border-color:#e8edf6;min-height:178px;padding:24px 22px;border-left:4px solid transparent}
+    .services-main .card::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,transparent,var(--primary-red),transparent);opacity:0;transition:opacity var(--transition)}
+    .services-main .card:hover{transform:translateY(-6px);border-left-color:var(--primary-red);box-shadow:0 22px 46px rgba(16,21,33,.13),0 10px 24px rgba(213,16,16,.10)}
+    .services-main .card:hover::before{opacity:1}
 
     @media (max-width:960px){
       .head-inner{flex-direction:column;align-items:flex-start}
       .hero-inner{grid-template-columns:1fr}
-      .services-layout{grid-template-columns:1fr}
+      .services-main .grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
       .public-nav{grid-template-columns:repeat(2,minmax(0,1fr))}
       .search-wrap{grid-template-columns:1fr}
       .top-nav{flex-direction:column}
@@ -168,7 +229,9 @@
     }
     @media (max-width:640px){
       .hero{padding:44px 0 58px}
-      .public-nav{grid-template-columns:1fr;margin-top:-34px}
+      .public-nav{grid-template-columns:1fr;margin-top:-34px;gap:12px}
+      .public-nav .btn{min-height:72px;padding:14px 16px}
+      .services-main .grid.cols-2{grid-template-columns:1fr;gap:16px}
       .card{padding:16px}
       .action-row .btn,.top-nav .btn{width:100%}
     }
@@ -207,20 +270,20 @@
 
   <main class="container" style="padding:20px">
     <div id="publicSection">
-      <div class="public-nav">
-        <button class="btn" id="showServicesBtn">1. Our Services</button>
-        <button class="btn secondary" id="showBookBtn">2. Book Appointment</button>
-        <button class="btn secondary" id="showBikeSalesBtn">3. Bikes for Sale</button>
-        <button class="btn secondary" id="showFeedbackBtn">4. Leave Feedback</button>
+      <div class="public-nav" aria-label="Public navigation">
+        <button class="btn active" id="showServicesBtn"><span class="nav-icon">🛠️</span><span class="nav-text"><span class="nav-kicker">01</span>Our Services</span></button>
+        <button class="btn secondary" id="showBookBtn"><span class="nav-icon">📅</span><span class="nav-text"><span class="nav-kicker">02</span>Book Appointment</span></button>
+        <button class="btn secondary" id="showBikeSalesBtn"><span class="nav-icon">🏍️</span><span class="nav-text"><span class="nav-kicker">03</span>Bikes for Sale</span></button>
+        <button class="btn secondary" id="showFeedbackBtn"><span class="nav-icon">⭐</span><span class="nav-text"><span class="nav-kicker">04</span>Leave Feedback</span></button>
+      </div>
+      <div class="hidden" aria-hidden="true">
+        <button class="menu-item active" id="showServicesBtnSide" tabindex="-1">01 OUR SERVICES</button>
+        <button class="menu-item" id="showBookBtnSide" tabindex="-1">02 BOOK APPOINTMENT</button>
+        <button class="menu-item" id="showBikeSalesBtnSide" tabindex="-1">03 BIKES FOR SALE</button>
+        <button class="menu-item" id="showFeedbackBtnSide" tabindex="-1">04 LEAVE FEEDBACK</button>
       </div>
 
       <section id="servicesPage" class="services-layout">
-        <aside class="service-menu card">
-          <button class="menu-item active" id="showServicesBtnSide">01 OUR SERVICES</button>
-          <button class="menu-item" id="showBookBtnSide">02 BOOK APPOINTMENT</button>
-          <button class="menu-item" id="showBikeSalesBtnSide">03 BIKES FOR SALE</button>
-          <button class="menu-item" id="showFeedbackBtnSide">04 LEAVE FEEDBACK</button>
-        </aside>
         <div class="services-main">
           <h3 class="services-title">OUR SERVICES</h3>
           <div class="grid cols-2">
@@ -613,10 +676,21 @@ if(openAdminBtn) openAdminBtn.onclick=async ()=>{
 el('publicHomeBtn').onclick=()=>{el('logoutBtn').click(); window.scrollTo({top:0,behavior:'smooth'});};
 
 function setActiveServiceMenu(pageId){
-  const map={servicesPage:'showServicesBtnSide',bookPage:'showBookBtnSide',bikeSalesPage:'showBikeSalesBtnSide',feedbackPage:'showFeedbackBtnSide'};
-  Object.values(map).forEach(id=>el(id)?.classList.remove('active'));
-  const activeId=map[pageId];
-  if(activeId) el(activeId)?.classList.add('active');
+  const sideMap={servicesPage:'showServicesBtnSide',bookPage:'showBookBtnSide',bikeSalesPage:'showBikeSalesBtnSide',feedbackPage:'showFeedbackBtnSide'};
+  const topMap={servicesPage:'showServicesBtn',bookPage:'showBookBtn',bikeSalesPage:'showBikeSalesBtn',feedbackPage:'showFeedbackBtn'};
+  Object.values(sideMap).forEach(id=>el(id)?.classList.remove('active'));
+  Object.values(topMap).forEach(id=>{
+    const btn=el(id);
+    btn?.classList.remove('active');
+    btn?.classList.add('secondary');
+  });
+  const activeSideId=sideMap[pageId];
+  const activeTopId=topMap[pageId];
+  if(activeSideId) el(activeSideId)?.classList.add('active');
+  if(activeTopId){
+    el(activeTopId)?.classList.add('active');
+    el(activeTopId)?.classList.remove('secondary');
+  }
 }
 
 function showPublicPage(pageId){
