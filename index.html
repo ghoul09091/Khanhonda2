@@ -218,7 +218,26 @@
     }
     .hero::before{display:block;content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:80px 80px;opacity:.18}
     .hero::after{content:"";position:absolute;right:0;bottom:0;width:48%;height:100%;background:linear-gradient(90deg,transparent,rgba(213,16,16,.16));pointer-events:none}
-    .hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1.02fr .98fr;align-items:center;gap:22px;min-height:376px}
+    .hero-inner{
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  align-items:center;
+  gap:40px;
+  min-height:376px;
+}
+.hero-copy{
+  grid-column:1;
+}
+
+.hero-bike{
+  grid-column:2;
+  justify-self:end;
+  display:flex;
+  align-items:flex-end;
+  justify-content:flex-end;
+}
     .hero-copy{padding:34px 0 30px}.hero-copy p{margin:0}
     .hero-eyebrow{display:flex;align-items:center;gap:8px;font-size:.76rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;margin-bottom:12px!important}.hero-eyebrow::before,.hero-eyebrow::after{content:"";width:12px;height:2px;background:var(--primary-red);display:inline-block}
     .hero-copy h1{font-size:3.05rem;line-height:1.18;letter-spacing:-.04em;margin:0 0 12px;font-weight:800;color:#fff}.hero-copy h1 span{color:#ff2a2a}
@@ -227,7 +246,15 @@
     .hero-trust{display:flex;gap:26px;flex-wrap:wrap;margin:18px 0 18px}.trust-item{display:inline-flex;align-items:center;gap:10px;font-size:.9rem;font-weight:700;color:#fff}.trust-icon{width:34px;height:34px;border:1px solid rgba(213,16,16,.55);border-radius:999px;display:grid;place-items:center;color:#ff2828;background:rgba(213,16,16,.10);box-shadow:0 8px 18px rgba(0,0,0,.22)}
     .hero-actions{display:flex;gap:16px;flex-wrap:wrap}.hero-actions .btn{min-width:222px;min-height:52px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;gap:12px;font-size:.92rem}.hero-actions .btn.secondary{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.72);color:#fff;box-shadow:none}.hero-actions .btn.secondary:hover{background:rgba(255,255,255,.12)}
     .hero-bike{align-self:stretch;display:flex;align-items:flex-end;justify-content:flex-end;position:relative;overflow:visible}.hero-bike::before{content:"";position:absolute;right:4%;bottom:22px;width:62%;height:32%;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.56),transparent 68%);filter:blur(6px)}
-    .hero-bike img{position:relative;width:112%;max-width:650px;max-height:388px;object-fit:contain;filter:drop-shadow(0 24px 32px rgba(0,0,0,.48));transform:translate(26px,4px)}
+    .hero-bike img{
+  position:relative;
+  width:100%;
+  max-width:650px;
+  max-height:388px;
+  object-fit:contain;
+  filter:drop-shadow(0 24px 32px rgba(0,0,0,.48));
+  transform:none;
+}
 
     .services-layout{display:block}.services-main{width:100%}.services-main .grid.cols-2{grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
     .service-menu{padding:14px;background:linear-gradient(180deg,#fff,#f9fbff)}.menu-item{display:block;width:100%;text-align:left;border:1px solid #e5eaf5;background:#fff;border-radius:10px;padding:14px 10px;font-weight:700;color:#3d4554;border-left:4px solid transparent;cursor:pointer;transition:all var(--transition);margin-bottom:8px}.menu-item.active,.menu-item:hover{color:var(--primary-red);background:#fff6f6;border-left-color:var(--primary-red);box-shadow:0 8px 20px rgba(16,21,33,.08)}
